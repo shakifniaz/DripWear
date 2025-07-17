@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
-
-import com.example.dripwear.MainActivity;
 import com.example.dripwear.R;
 import com.example.dripwear.databinding.ActivitySplashBinding;
 import androidx.appcompat.app.AppCompatActivity;
