@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "838867152204",
+    "project_id": "dripwear-7bbd1",
+    "storage_bucket": "dripwear-7bbd1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:838867152204:android:af7972e0a3176dbbf8f3e9",
+        "android_client_info": {
+          "package_name": "com.example.dripwear"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJOQFhWfIaXv9GBjCUhFpIRF7CsBEUmm8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
