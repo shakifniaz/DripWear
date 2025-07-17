@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.example.dripwear.Adapter.ColorAdapter;
 import com.example.dripwear.Adapter.PicListAdapter;
 import com.example.dripwear.Adapter.SizeAdapter;
+import com.example.dripwear.Domain.ItemsModel;
 import com.example.dripwear.Helper.ManagmentCart;
 import com.example.dripwear.R;
 import com.example.dripwear.databinding.ActivityDetailBinding;
