@@ -1,4 +1,5 @@
 <resources>
-    <string name="app_name">DripWear</string>
-    <string name="title_splash"><font color = "#dc6f31">Your Shopping</font>\n Destination For Everything</string>
+    <string name="app_name">project227.2</string>
+    <string name="title_splash"><font color="#dc6f31">Your Shoping</font> Destination \nfor Everything</string>
+    <string name="subtitle_splash">Get personalized recommendations \nEnjoy fast, free shipping</string>
 </resources>
