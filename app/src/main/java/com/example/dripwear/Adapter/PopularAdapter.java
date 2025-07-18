@@ -53,13 +53,10 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Viewhold
                 .load(items.get(position).getPicUrl().get(0))
                 .apply(options)
                 .into(holder.binding.pic);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, DetailActivity.class);
-                intent.putExtra("object", items.get(position));
-                context.startActivity(intent);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetailActivity.class);
+            intent.putExtra("object", items.get(position));
+            context.startActivity(intent);
         });
     }
 
