@@ -1,5 +1,6 @@
 package com.example.dripwear.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        binding.cartBtn.setOnClickListener((View.OnClickListener) v -> startActivity(new Intent(MainActivity.this, CartActivity.class)));
     }
 
     private void initPopular() {
