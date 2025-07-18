@@ -21,6 +21,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     private int selectedPosition=-1;
     private int lastSelectedPosition=-1;
 
+    public CategoryAdapter(ArrayList<CategoryModel> items) {
+        this.items = items;
+    }
+
     @NonNull
     @Override
     public CategoryAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -60,7 +64,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ViewholderCategoryBinding binding;
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(ViewholderCategoryBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }

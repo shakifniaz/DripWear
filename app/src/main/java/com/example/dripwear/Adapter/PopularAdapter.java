@@ -67,7 +67,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Viewhold
 
     public class Viewholder extends RecyclerView.ViewHolder {
         ViewholderPopularBinding binding;
-        public Viewholder(ViewholderPopularBinding View itemView) {
+        public Viewholder(ViewholderPopularBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
