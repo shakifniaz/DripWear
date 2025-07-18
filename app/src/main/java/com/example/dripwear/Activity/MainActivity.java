@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 binding.popularView.setAdapter(new PopularAdapter(itemsModels));
                 binding.popularView.setNestedScrollingEnabled(true);
             }
-            binding.progressBarPopular.setVisibilty(View.GONE);
+            binding.progressBarPopular.setVisibility(View.GONE);
         });
         viewModel.loadPopular();
     }
@@ -81,11 +81,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void banners(ArrayList<BannerModel> bannerModels) {
-        binding.viewPageSlider.setAdapter(new SliderAdapter(bannerModels,binding.viewPagerSlider));
-        binding.viewPageSlider.setClipToPadding(false);
-        binding.viewPageSlider.setClipChildren(false);
-        binding.viewPageSlider.setOffscreenPageLimit(3);
-        binding.viewPageSlider.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+        binding.viewPagerSlider.setAdapter(new SliderAdapter(bannerModels,binding.viewPagerSlider));
+        binding.viewPagerSlider.setClipToPadding(false);
+        binding.viewPagerSlider.setClipChildren(false);
+        binding.viewPagerSlider.setOffscreenPageLimit(3);
+        binding.viewPagerSlider.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
 
         CompositePageTransformer compositePageTransformer=new CompositePageTransformer();
         compositePageTransformer.addTransformer(new MarginPageTransformer(40));

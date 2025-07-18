@@ -15,6 +15,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterInside;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.dripwear.Activity.DetailActivity;
 import com.example.dripwear.Domain.ItemsModel;
+import com.example.dripwear.databinding.ViewholderPopularBinding;
 
 import java.util.ArrayList;
 

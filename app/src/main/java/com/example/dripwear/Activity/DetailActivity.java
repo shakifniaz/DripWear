@@ -66,7 +66,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void getBundles() {
-        object = getIntent().getSerializableExtra("object");
+        object = (ItemsModel) getIntent().getSerializableExtra("object");
         binding.titleTxt.setText(object.getTitle());
         binding.priceTxt.setText("$"+object.getPrice());
         binding.oldPriceTxt.setText("$"+object.getOldPrice());
