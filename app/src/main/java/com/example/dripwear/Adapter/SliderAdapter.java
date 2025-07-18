@@ -63,7 +63,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
 
         void setImage(BannerModel bannerModel){
             Glide.with(context)
-            .load(bannerModel).getUrl().into(imageView);
+            .load(bannerModel.getUrl()).into(imageView);
         }
 
     }

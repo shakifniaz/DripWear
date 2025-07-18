@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        binding.cartBtn.setOnClickListener((View.OnClickListener) v -> startActivity(new Intent(MainActivity.this, CartActivity.class)));
+        binding.cartBtn.setOnClickListener( v -> startActivity(new Intent(MainActivity.this, CartActivity.class)));
     }
 
     private void initPopular() {

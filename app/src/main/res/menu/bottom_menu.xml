@@ -6,7 +6,7 @@
     android:icon="@drawable/btn_1"
     android:title="Home"
     app:cnb_backgroundColor="@color/orange"
-    app:cnb_itemColor="@color/white"
+
     />
 
     <item
@@ -14,20 +14,20 @@
         android:icon="@drawable/btn_2"
         android:title="Favorite"
         app:cnb_backgroundColor="@color/orange"
-        app:cnb_itemColor="@color/white"/>
+        />
 
     <item
         android:id="@+id/cart"
         android:icon="@drawable/btn_3"
         android:title="Cart"
         app:cnb_backgroundColor="@color/orange"
-        app:cnb_itemColor="@color/white"/>
+        />
 
     <item
         android:id="@+id/profile"
         android:icon="@drawable/btn_4"
         android:title="Profile"
         app:cnb_backgroundColor="@color/orange"
-        app:cnb_itemColor="@color/white"/>
+        />
 
 </menu>
