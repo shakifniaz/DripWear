@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dripwear.Domain.CategoryModel;
 import com.example.dripwear.R;
+import com.example.dripwear.databinding.ViewholderCategoryBinding;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -31,7 +32,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull CategoryAdapter.ViewHolder holder, int position) {
-        holder.binding.titleTxt.setText(items.get(position).getTitle());
+        holder.binding.titletxt.setText(items.get(position).getTitle());
 
         holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,11 +45,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         });
 
         if(selectedPosition==position){
-            holder.binding.titleTxt.setBackgroundResource(R.drawable.orange_bg);
-            holder.binding.titleTxt.setTextColor(context.getResources().getColor(R.color.white));
+            holder.binding.titletxt.setBackgroundResource(R.drawable.orange_bg);
+            holder.binding.titletxt.setTextColor(context.getResources().getColor(R.color.white));
         }else{
-            holder.binding.titleTxt.setBackgroundResource(R.drawable.stroke_bg);
-            holder.binding.titleTxt.setTextColor(context.getResources().getColor(R.color.black));
+            holder.binding.titletxt.setBackgroundResource(R.drawable.stroke_bg);
+            holder.binding.titletxt.setTextColor(context.getResources().getColor(R.color.black));
         }
     }
 

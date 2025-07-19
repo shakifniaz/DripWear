@@ -31,8 +31,9 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.example.dripwear.Domain.ItemsModel;
 import com.google.gson.Gson;
-import com.uilover.project2272.Domain.ItemsModel;
+import com.example.dripwear.Domain.ItemsModel;
 
 import java.io.File;
 import java.io.FileOutputStream;
