@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.dripwear.Adapter.CartAdapter;
 import com.example.dripwear.Helper.ChangeNumberItemsListener;
 import com.example.dripwear.Helper.ManagmentCart;
 import com.example.dripwear.R;
@@ -36,14 +37,14 @@ public class CartActivity extends AppCompatActivity {
     private void initCartList() {
         if (managementCart.getListCart().isEmpty()){
             binding.emptyTxt.setVisibility(View.VISIBLE);
-            binding.scrollView3.setVisibility(View.GONE);
+            binding.scrollView4.setVisibility(View.GONE);
         } else {
             binding.emptyTxt.setVisibility(View.GONE);
-            binding.scrollView3.setVisibility(View.VISIBLE);
+            binding.scrollView4.setVisibility(View.VISIBLE);
         }
 
         binding.cartView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        binding.cartView.setAdapter(new CartActivity(managementCart.getListCart(), this, this::calculatorCart()));
+        binding.cartView.setAdapter(new CartAdapter(managementCart.getListCart(), this, this::calculatorCart));
     }
 
     private void setVariable() {

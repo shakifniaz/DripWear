@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(R.layout.activity_main);
+        setContentView(binding.getRoot());
         viewModel = new MainViewModel();
         initCategory();
         initSlider();
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        binding.cartBtn.setOnClickListener((View.OnClickListener) v -> startActivity(new Intent(MainActivity.this, CartActivity.class)));
+        binding.cartBtn.setOnClickListener( v -> startActivity(new Intent(MainActivity.this, CartActivity.class)));
     }
 
     private void initPopular() {
