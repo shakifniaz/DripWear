@@ -12,7 +12,7 @@
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_margin="4dp"
-        android:background="@color/grey_bg"
+        android:background="@drawable/grey_bg"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

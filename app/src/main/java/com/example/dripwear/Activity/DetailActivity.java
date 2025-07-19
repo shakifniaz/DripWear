@@ -25,7 +25,7 @@ import java.util.concurrent.ForkJoinPool;
 public class DetailActivity extends AppCompatActivity {
     private ActivityDetailBinding binding;
     private ItemsModel object;
-    private int numberOrder=1;
+    private int numberOrder = 1;
     private ManagmentCart managmentCart;
 
     @Override
@@ -35,7 +35,7 @@ public class DetailActivity extends AppCompatActivity {
         binding = ActivityDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        managementCart = new ManagmentCart(this);
+        managmentCart = new ManagmentCart(this);
 
         getBundles();
         initPicList();
@@ -59,7 +59,7 @@ public class DetailActivity extends AppCompatActivity {
 
         Glide.with(this)
                 .load(picList.get(0))
-                .into((binding.pic);
+                .into((binding.pic));
 
         binding.picList.setAdapter(new PicListAdapter(picList,binding.pic));
         binding.picList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -75,8 +75,8 @@ public class DetailActivity extends AppCompatActivity {
         binding.descriptionTxt.setText(object.getDescription());
 
         binding.addToCartBtn.setOnClickListener(v -> {
-            object.setNumberinCart(numberOrder);
-            managementCart.insertItem(object);
+            object.setNumberInCart(numberOrder);
+            managmentCart.insertItem(object);
         });
 
         binding.backBtn.setOnClickListener(v -> finish());
