@@ -56,7 +56,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.Viewholder> {
             changeNumberItemsListener.changed();
         }));
 
-        holder.binding.plsuCartBtn.setOnClickListener(v -> managmentCart.minusItem(listItemsSelected, position, () -> {
+        holder.binding.minusCartBtn.setOnClickListener(v -> managmentCart.minusItem(listItemsSelected, position, () -> {
             notifyDataSetChanged();
             changeNumberItemsListener.changed();
         }));
