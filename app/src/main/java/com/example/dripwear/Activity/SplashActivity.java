@@ -15,7 +15,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         binding = ActivitySplashBinding.inflate(getLayoutInflater());
-        setContentView(R.layout.activity_splash);
+        setContentView(binding.getRoot());
 
         binding.startBtn.setOnClickListener(v->
                 startActivity(new Intent(SplashActivity.this, MainActivity.class)));
