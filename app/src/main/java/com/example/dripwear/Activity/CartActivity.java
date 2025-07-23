@@ -25,6 +25,7 @@ public class CartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        binding = ActivityCartBinding.inflate(getLayoutInflater()); //This line was modified
         setContentView(binding.getRoot());
 
         managementCart = new ManagmentCart(this);
