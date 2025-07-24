@@ -59,9 +59,9 @@ public class CartActivity extends AppCompatActivity {
         double total = Math.round((managementCart.getTotalFee()+tax+delivery)*100.0)/100.0;
         double itemTotal = Math.round((managementCart.getTotalFee()*100.0))/100.0;
 
-        binding.totalFeeTxt.setText("Tk. "+itemTotal);
-        binding.taxTxt.setText("Tk. "+delivery);
-        binding.deliveryTxt.setText("Tk. "+delivery);
-        binding.totalTxt.setText("Tk. "+total);
+        binding.totalFeeTxt.setText("$ "+itemTotal);
+        binding.taxTxt.setText("$ "+delivery);
+        binding.deliveryTxt.setText("$ "+delivery);
+        binding.totalTxt.setText("$ "+total);
     }
 }
