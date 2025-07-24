@@ -1,5 +1,6 @@
 package com.example.dripwear.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(R.layout.activity_main);
+        setContentView(binding.getRoot());
         viewModel = new MainViewModel();
         initCategory();
         initSlider();
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        binding.cartBtn.setOnClickListener( v -> startActivity(new Intent(MainActivity.this, CartActivity.class)));
     }
 
     private void initPopular() {
@@ -60,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 binding.popularView.setAdapter(new PopularAdapter(itemsModels));
                 binding.popularView.setNestedScrollingEnabled(true);
             }
-            binding.progressBarPopular.setVisibilty(View.GONE);
+            binding.progressBarPopular.setVisibility(View.GONE);
         });
         viewModel.loadPopular();
     }
@@ -78,11 +81,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void banners(ArrayList<BannerModel> bannerModels) {
-        binding.viewPageSlider.setAdapter(new SliderAdapter(bannerModels,binding.viewPagerSlider));
-        binding.viewPageSlider.setClipToPadding(false);
-        binding.viewPageSlider.setClipChildren(false);
-        binding.viewPageSlider.setOffscreenPageLimit(3);
-        binding.viewPageSlider.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+        binding.viewPagerSlider.setAdapter(new SliderAdapter(bannerModels,binding.viewPagerSlider));
+        binding.viewPagerSlider.setClipToPadding(false);
+        binding.viewPagerSlider.setClipChildren(false);
+        binding.viewPagerSlider.setOffscreenPageLimit(3);
+        binding.viewPagerSlider.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
 
         CompositePageTransformer compositePageTransformer=new CompositePageTransformer();
         compositePageTransformer.addTransformer(new MarginPageTransformer(40));
