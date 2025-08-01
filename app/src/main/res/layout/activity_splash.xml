@@ -31,6 +31,7 @@
                 android:id="@+id/imageView"
                 android:layout_width="420dp"
                 android:layout_height="420dp"
+                android:layout_marginTop="30dp"
                 android:layout_gravity="center_horizontal"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
@@ -54,6 +55,7 @@
                 android:layout_marginTop="10dp"
                 android:lineSpacingExtra="10dp"
                 android:text="@string/subtitle_splash"
+                android:textColor="@color/darkGrey"
                 android:textAlignment="center"
                 android:textSize="16sp" />
 
@@ -63,7 +65,7 @@
                 android:layout_width="300dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="55dp"
+                android:layout_marginTop="65dp"
                 android:layout_marginBottom="16dp"
                 android:text="Let's Get Started"
                 android:background="@drawable/orange_bg"
@@ -77,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/signin"
                 android:textAlignment="center"
+                android:textColor="@color/darkGrey"
                 android:textSize="18sp"
                 android:layout_marginBottom="20dp"/>
         </LinearLayout>
