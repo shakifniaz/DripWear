@@ -8,4 +8,9 @@
     <color name="darkGrey">#616161</color>
     <color name="orange">#DC6F31</color>
     <color name="red">#FF0000</color>
+    <color name="purple_button">#9E4222</color>
+    <color name="text">#000000</color>
+    <color name="purple_text">#FF7A4F</color>
+    <color name="app_bg">#1D1D1D</color>
+    <color name="new_color">#FF5722</color>
 </resources>
