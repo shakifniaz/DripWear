@@ -57,6 +57,6 @@ public class FavoritesActivity extends AppCompatActivity {
         binding.cartView.setAdapter(new FavoritesAdapter(managementFavorites.getListFav(), this));    }
 
     private void setVariable() {
-        binding.backBtn.setOnClickListener(v -> finish());
+        //binding.backBtn.setOnClickListener(v -> finish());
     }
 }

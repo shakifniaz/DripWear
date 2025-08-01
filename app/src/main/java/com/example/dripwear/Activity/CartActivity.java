@@ -67,7 +67,7 @@ public class CartActivity extends AppCompatActivity {
     }
 
     private void setVariable() {
-        binding.backBtn.setOnClickListener(v -> finish());
+        //binding.backBtn.setOnClickListener(v -> finish());
     }
 
     private void calculatorCart() {
