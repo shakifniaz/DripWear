@@ -58,6 +58,7 @@
                 android:textSize="12sp"
                 android:textStyle="bold"
                 tools:ignore="TextFields"
+
                 android:textColor="@color/new_color"/>
 
             <EditText
@@ -195,9 +196,9 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/buttons"
+                android:background="@drawable/button"
                 android:text="Register"
-                android:textAlignment="center"
+                android:gravity="center"
                 android:fontFamily="@font/montserrat_bold"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
