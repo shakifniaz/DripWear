@@ -49,10 +49,10 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(int id){
                 if (id == R.id.favorites) {
                     startActivity(new Intent(MainActivity.this, FavoritesActivity.class));
-                    //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 } else if (id == R.id.cart) {
                     startActivity(new Intent(MainActivity.this, CartActivity.class));
-                    //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
             }
         });
