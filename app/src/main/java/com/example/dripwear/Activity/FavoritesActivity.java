@@ -31,11 +31,11 @@ public class FavoritesActivity extends AppCompatActivity {
             public void onItemSelected(int id) {
                 if (id == R.id.home) {
                     startActivity(new Intent(FavoritesActivity.this, MainActivity.class));
-                    //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     finish();
                 } else if (id == R.id.cart) {
                     startActivity(new Intent(FavoritesActivity.this, CartActivity.class));
-                    //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
             }
         });
