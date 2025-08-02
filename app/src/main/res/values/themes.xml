@@ -1,11 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Theme.DripWear" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
+        <item name="android:statusBarColor">@color/lightGrey</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
-
-    <style name="Theme.DripWear" parent="Base.Theme.DripWear" />
     <style name="circleImageView">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">10dp</item>

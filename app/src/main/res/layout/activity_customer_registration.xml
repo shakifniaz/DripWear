@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/orange"
+    android:background="#D35E21"
     android:orientation="vertical"
     tools:context="Activity.LoginActivity">
 
@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="75dp"
+        android:layout_marginTop="105dp"
         android:fontFamily="@font/line_seed_sans_bd"
         android:text="Sign Up"
         android:textColor="@color/white"
@@ -24,9 +24,10 @@
         android:layout_height="wrap_content"
         android:text="Registering as a customer"
         android:layout_gravity="center"
-        android:textColor="@color/new_color"
+        android:textColor="@color/white"
         android:fontFamily="@font/montserrat_regular"
-        android:layout_marginTop="1dp"/>
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="5dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -58,6 +59,7 @@
                 android:textSize="12sp"
                 android:textStyle="bold"
                 tools:ignore="TextFields"
+                android:backgroundTint="@color/new_color"
                 android:textColor="@color/new_color"/>
 
             <EditText
@@ -195,9 +197,9 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/buttons"
+                android:background="@drawable/button"
                 android:text="Register"
-                android:textAlignment="center"
+                android:gravity="center"
                 android:fontFamily="@font/montserrat_bold"
                 android:textAllCaps="true"
                 android:textColor="@color/white"

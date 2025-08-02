@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import android.widget.ImageView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -40,18 +41,35 @@ public class MainActivity extends AppCompatActivity {
         initPopular();
         bottomNavigation();
 
+        // Find the bell icon and set a click listener
+        ImageView bellIcon = findViewById(R.id.imageView5);
+        bellIcon.setOnClickListener(v -> {
+            // Create an intent to start the NotificationsActivity
+            Intent intent = new Intent(MainActivity.this, NotificationsActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     private void bottomNavigation() {
-        binding.bottomNavigation.setItemSelected(R.id.home,true);
+        binding.bottomNavigation.setItemSelected(R.id.home, true);
         binding.bottomNavigation.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener(){
             @Override
-            public void onItemSelected(int i){
-
+            public void onItemSelected(int id){
+                if (id == R.id.favorites) {
+                    startActivity(new Intent(MainActivity.this, FavoritesActivity.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                } else if (id == R.id.cart) {
+                    startActivity(new Intent(MainActivity.this, CartActivity.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                }
             }
         });
 
-        binding.cartBtn.setOnClickListener( v -> startActivity(new Intent(MainActivity.this, CartActivity.class)));
+        binding.cartBtn.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, CartActivity.class));
+            binding.bottomNavigation.setItemSelected(R.id.cart, true);
+        });
     }
 
     private void initPopular() {

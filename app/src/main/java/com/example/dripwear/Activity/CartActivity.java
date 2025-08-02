@@ -1,5 +1,6 @@
 package com.example.dripwear.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -15,6 +16,7 @@ import com.example.dripwear.Helper.ChangeNumberItemsListener;
 import com.example.dripwear.Helper.ManagmentCart;
 import com.example.dripwear.R;
 import com.example.dripwear.databinding.ActivityCartBinding;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 public class CartActivity extends AppCompatActivity {
     private ActivityCartBinding binding;
@@ -29,6 +31,22 @@ public class CartActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         managementCart = new ManagmentCart(this);
+        ChipNavigationBar bottomNav = findViewById(R.id.bottomNavigation);
+        bottomNav.setItemSelected(R.id.cart, true);
+
+        bottomNav.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(int id) {
+                if (id == R.id.home) {
+                    startActivity(new Intent(CartActivity.this, MainActivity.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                    finish();
+                } else if (id == R.id.favorites) {
+                    startActivity(new Intent(CartActivity.this, FavoritesActivity.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                }
+            }
+        });
 
         calculatorCart();
         setVariable();
@@ -45,11 +63,16 @@ public class CartActivity extends AppCompatActivity {
         }
 
         binding.cartView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        binding.cartView.setAdapter(new CartAdapter(managementCart.getListCart(), this, this::calculatorCart));
+        binding.cartView.setAdapter(new CartAdapter(
+                managementCart.getListCart(),
+                this,
+                this::calculatorCart,
+                managementCart  // Add this parameter
+        ));
     }
 
     private void setVariable() {
-        binding.backBtn.setOnClickListener(v -> finish());
+        //binding.backBtn.setOnClickListener(v -> finish());
     }
 
     private void calculatorCart() {
