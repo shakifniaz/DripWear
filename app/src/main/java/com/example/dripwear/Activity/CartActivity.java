@@ -63,7 +63,12 @@ public class CartActivity extends AppCompatActivity {
         }
 
         binding.cartView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        binding.cartView.setAdapter(new CartAdapter(managementCart.getListCart(), this, this::calculatorCart));
+        binding.cartView.setAdapter(new CartAdapter(
+                managementCart.getListCart(),
+                this,
+                this::calculatorCart,
+                managementCart  // Add this parameter
+        ));
     }
 
     private void setVariable() {
