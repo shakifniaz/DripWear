@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.storage)
     testImplementation(libs.junit)
+    testImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation ("com.github.bumptech.glide:glide:4.12.0")
@@ -59,10 +60,19 @@ dependencies {
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
 
     //testing
+    testImplementation(platform("org.junit:junit-bom:5.9.3"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
     implementation ("junit:junit:4.13.2")
     implementation ("org.mockito:mockito-core:3.12.4")
+    implementation ("org.mockito:mockito-inline:3.12.4")
     implementation ("androidx.test:core:1.4.0")
     implementation ("androidx.test.ext:junit:1.1.3")
     implementation ("androidx.test.espresso:espresso-core:3.4.0")
-
+}
+tasks.withType<Test> {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
 }
