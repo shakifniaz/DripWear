@@ -87,12 +87,15 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigation.setItemSelected(R.id.home, true);
         binding.bottomNavigation.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener(){
             @Override
-            public void onItemSelected(int id){
+            public void onItemSelected(int id) {
                 if (id == R.id.favorites) {
                     startActivity(new Intent(MainActivity.this, FavoritesActivity.class));
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 } else if (id == R.id.cart) {
                     startActivity(new Intent(MainActivity.this, CartActivity.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                } else if (id == R.id.profile) {
+                    startActivity(new Intent(MainActivity.this, CustomerSettingsActivity.class));
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
             }
@@ -102,6 +105,12 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, CartActivity.class));
             binding.bottomNavigation.setItemSelected(R.id.cart, true);
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        binding.bottomNavigation.setItemSelected(R.id.home, true);
     }
 
     private void initPopular() {
