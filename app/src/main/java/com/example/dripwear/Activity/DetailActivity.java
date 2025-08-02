@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -16,6 +17,7 @@ import com.example.dripwear.Adapter.PicListAdapter;
 import com.example.dripwear.Adapter.SizeAdapter;
 import com.example.dripwear.Domain.ItemsModel;
 import com.example.dripwear.Helper.ManagmentCart;
+import com.example.dripwear.Helper.ManagmentFavorites;
 import com.example.dripwear.R;
 import com.example.dripwear.databinding.ActivityDetailBinding;
 
@@ -27,6 +29,8 @@ public class DetailActivity extends AppCompatActivity {
     private ItemsModel object;
     private int numberOrder = 1;
     private ManagmentCart managmentCart;
+    private ManagmentFavorites managmentFavorites;
+    private boolean isFavorite = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,8 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         managmentCart = new ManagmentCart(this);
+
+        managmentFavorites = new ManagmentFavorites(this);
 
         getBundles();
         initPicList();
@@ -74,11 +80,67 @@ public class DetailActivity extends AppCompatActivity {
 
         binding.descriptionTxt.setText(object.getDescription());
 
+        // Initialize favorites check
+        isFavorite = isItemInFavorites(object);
+        updateFavoriteButton();
+
         binding.addToCartBtn.setOnClickListener(v -> {
             object.setNumberInCart(numberOrder);
             managmentCart.insertItem(object);
         });
 
+        binding.favBtn.setOnClickListener(v -> {
+            if (isFavorite) {
+                // Remove from favorites
+                ArrayList<ItemsModel> favorites = managmentFavorites.getListFav();
+                int position = -1;
+                for (int i = 0; i < favorites.size(); i++) {
+                    if (favorites.get(i).getTitle().equals(object.getTitle())) {
+                        position = i;
+                        break;
+                    }
+                }
+                if (position != -1) {
+                    managmentFavorites.removeItem(favorites, position, () -> {
+                        isFavorite = false;
+                        updateFavoriteButton();
+                    });
+                }
+            } else {
+                // Add to favorites
+                managmentFavorites.insertItem(object);
+                isFavorite = true;
+                updateFavoriteButton();
+            }
+        });
+
         binding.backBtn.setOnClickListener(v -> finish());
+    }
+    private boolean isItemInFavorites(ItemsModel item) {
+        ArrayList<ItemsModel> favoritesList = managmentFavorites.getListFav();
+        for (ItemsModel favoriteItem : favoritesList) {
+            if (favoriteItem.getTitle().equals(item.getTitle())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private int getItemPosition(ItemsModel item) {
+        for (int i = 0; i < managmentFavorites.getListFav().size(); i++) {
+            if (managmentFavorites.getListFav().get(i).getTitle().equals(item.getTitle())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void updateFavoriteButton() {
+        if (isFavorite) {
+            binding.favBtn.setImageResource(R.drawable.fav);
+            binding.favBtn.setColorFilter(ContextCompat.getColor(this, R.color.orange));
+        } else {
+            binding.favBtn.setImageResource(R.drawable.fav);
+            binding.favBtn.setColorFilter(ContextCompat.getColor(this, R.color.black));
+        }
     }
 }

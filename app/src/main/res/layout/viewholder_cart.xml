@@ -41,6 +41,17 @@
         app:layout_constraintTop_toBottomOf="@+id/titeTxt" />
 
     <TextView
+        android:id="@+id/oldPriceTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="$0"
+        android:textColor="@color/darkGrey"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/feeEachItem"
+        app:layout_constraintTop_toBottomOf="@+id/titeTxt" />
+
+    <TextView
         android:id="@+id/totalEachItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
