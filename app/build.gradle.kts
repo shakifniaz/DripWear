@@ -53,9 +53,15 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth")
     implementation ("com.google.firebase:firebase-database")
 
-    // Add these if missing
     implementation ("androidx.appcompat:appcompat:1.6.1")
     implementation ("com.google.android.material:material:1.9.0")
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
+
+    //testing
+    implementation ("junit:junit:4.13.2")
+    implementation ("org.mockito:mockito-core:3.12.4")
+    implementation ("androidx.test:core:1.4.0")
+    implementation ("androidx.test.ext:junit:1.1.3")
+    implementation ("androidx.test.espresso:espresso-core:3.4.0")
 
 }
