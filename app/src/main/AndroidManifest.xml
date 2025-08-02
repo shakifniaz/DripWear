@@ -33,12 +33,10 @@
                 android:name=".Activity.MainActivity"
                 android:launchMode="singleTop">
         </activity>
-
         <activity
                 android:name=".Activity.CartActivity"
                 android:launchMode="singleTop">
         </activity>
-
         <activity
                 android:name=".Activity.FavoritesActivity"
                 android:launchMode="singleTop">
@@ -49,9 +47,12 @@
         <activity
                 android:name=".Activity.ForgotPasswordActivity"
                 android:exported="false" />
-
         <activity
                 android:name=".Activity.NotificationsActivity"
+                android:exported="false" />
+
+        <activity
+                android:name=".Activity.CustomerSettingsActivity"
                 android:exported="false" />
 
         <meta-data
