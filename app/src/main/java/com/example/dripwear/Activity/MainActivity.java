@@ -3,9 +3,12 @@ package com.example.dripwear.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +22,12 @@ import com.example.dripwear.Domain.BannerModel;
 import com.example.dripwear.R;
 import com.example.dripwear.ViewModel.MainViewModel;
 import com.example.dripwear.databinding.ActivityMainBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import java.util.ArrayList;
@@ -28,6 +37,11 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
 
+    // Add these new declarations for the user name feature
+    private TextView userNameTextView;
+    private FirebaseAuth mAuth;
+    private DatabaseReference mCustomerDatabase;
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +50,25 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         viewModel = new MainViewModel();
+
+        // New code block for the username feature
+        userNameTextView = findViewById(R.id.textView5);
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            userID = mAuth.getCurrentUser().getUid();
+            mCustomerDatabase = FirebaseDatabase.getInstance().getReference()
+                    .child("Users")
+                    .child("Customers")
+                    .child(userID);
+            getUserName();
+        }
+
+        userNameTextView.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CustomerSettingsActivity.class);
+            startActivity(intent);
+        });
+        // End of new code block
+
         initCategory();
         initSlider();
         initPopular();
@@ -48,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, NotificationsActivity.class);
             startActivity(intent);
         });
-
     }
 
     private void bottomNavigation() {
@@ -119,6 +151,26 @@ public class MainActivity extends AppCompatActivity {
             binding.categoryView.setAdapter(new CategoryAdapter(categoryModels));
             binding.categoryView.setNestedScrollingEnabled(true);
             binding.progressBarCategory.setVisibility(View.GONE);
+        });
+    }
+
+    // New method to get the user's name from Firebase
+    private void getUserName() {
+        mCustomerDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists() && snapshot.hasChild("name")) {
+                    String name = snapshot.child("name").getValue(String.class);
+                    userNameTextView.setText(name);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this,
+                        "Failed to load user name: " + error.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }
