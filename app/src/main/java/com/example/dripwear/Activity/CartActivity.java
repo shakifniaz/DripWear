@@ -43,7 +43,7 @@ public class CartActivity extends AppCompatActivity {
                     finish();
                 } else if (id == R.id.favorites) {
                     startActivity(new Intent(CartActivity.this, FavoritesActivity.class));
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 }
             }
         });
