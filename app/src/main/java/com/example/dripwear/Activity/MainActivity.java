@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import android.widget.ImageView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,6 +40,14 @@ public class MainActivity extends AppCompatActivity {
         initSlider();
         initPopular();
         bottomNavigation();
+
+        // Find the bell icon and set a click listener
+        ImageView bellIcon = findViewById(R.id.imageView5);
+        bellIcon.setOnClickListener(v -> {
+            // Create an intent to start the NotificationsActivity
+            Intent intent = new Intent(MainActivity.this, NotificationsActivity.class);
+            startActivity(intent);
+        });
 
     }
 
