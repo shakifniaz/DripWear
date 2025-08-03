@@ -252,7 +252,6 @@ public class CustomerSettingsActivity extends AppCompatActivity {
                         Toast.makeText(CustomerSettingsActivity.this,
                                 "Profile updated successfully",
                                 Toast.LENGTH_SHORT).show();
-                        finish();
                     } else {
                         Toast.makeText(CustomerSettingsActivity.this,
                                 "Database error: " + task.getException().getMessage(),
