@@ -41,6 +41,7 @@ public class FavoritesActivity extends AppCompatActivity {
                 } else if (id == R.id.profile) {
                     startActivity(new Intent(FavoritesActivity.this, CustomerSettingsActivity.class));
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    finish();
                 }
 
             }
