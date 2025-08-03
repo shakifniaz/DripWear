@@ -33,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,12 +43,13 @@ import java.util.Map;
 public class CustomerSettingsActivity extends AppCompatActivity {
 
     private EditText mNameField, mPhoneField, mDobField;
-    private Button mBack, mConfirm;
+    private Button mConfirm;
     private ImageView mProfileImage;
     private FirebaseAuth mAuth;
     private DatabaseReference mCustomerDatabase;
     private String userID;
     private Uri resultUri;
+    private ChipNavigationBar bottomNav;
     private static final int PICK_IMAGE_REQUEST = 1;
 
     @Override
@@ -65,8 +67,13 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         mPhoneField = findViewById(R.id.customerPhone);
         mDobField = findViewById(R.id.dob);
         mProfileImage = findViewById(R.id.profileImage);
-        mBack = findViewById(R.id.back);
+        //mBack = findViewById(R.id.back);
         mConfirm = findViewById(R.id.confirm);
+
+        // Initialize bottom navigation
+        bottomNav = findViewById(R.id.bottomNavigation);
+        bottomNav.setItemSelected(R.id.profile, true);
+        setupBottomNavigation();
 
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
@@ -84,7 +91,36 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         });
 
         mConfirm.setOnClickListener(v -> saveUserInformation());
-        mBack.setOnClickListener(v -> finish());
+        //mBack.setOnClickListener(v -> finish());
+    }
+
+    private void setupBottomNavigation() {
+        bottomNav.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(int id) {
+                if (id == R.id.home) {
+                    startActivity(new Intent(CustomerSettingsActivity.this, MainActivity.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                    finish();
+                } else if (id == R.id.cart) {
+                    startActivity(new Intent(CustomerSettingsActivity.this, CartActivity.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                    finish();
+                } else if (id == R.id.favorites) {
+                    startActivity(new Intent(CustomerSettingsActivity.this, FavoritesActivity.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                    finish();
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (bottomNav != null) {
+            bottomNav.setItemSelected(R.id.profile, true);
+        }
     }
 
     private void getUserInfo() {
@@ -216,7 +252,6 @@ public class CustomerSettingsActivity extends AppCompatActivity {
                         Toast.makeText(CustomerSettingsActivity.this,
                                 "Profile updated successfully",
                                 Toast.LENGTH_SHORT).show();
-                        finish();
                     } else {
                         Toast.makeText(CustomerSettingsActivity.this,
                                 "Database error: " + task.getException().getMessage(),
