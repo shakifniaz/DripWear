@@ -79,7 +79,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        // CRITICAL FIX: Check if the user is logged in at the start
+        //CRITICAL FIX: Check if the user is logged in at the start
         if (mAuth.getCurrentUser() == null) {
             logoutUser();
             return;
@@ -185,7 +185,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
     }
 
     private void saveUserInformation() {
-        // FIX: Check if user session is still active
+        //FIX: Check if user session is still active
         if (mAuth.getCurrentUser() == null) {
             logoutUser();
             return;
@@ -290,7 +290,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        // FIX: Use updateChildren() to prevent overwriting existing data.
+        //FIX: Use updateChildren() to prevent overwriting existing data.
         mCustomerDatabase.updateChildren(userInfo)
                 .addOnCompleteListener(task -> {
                     progressDialog.dismiss();
