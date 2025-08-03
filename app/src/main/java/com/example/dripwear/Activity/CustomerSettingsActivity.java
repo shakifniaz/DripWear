@@ -44,6 +44,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
 
     private EditText mNameField, mPhoneField, mDobField;
     private Button mConfirm;
+    private Button mLogout;
     private ImageView mProfileImage;
     private FirebaseAuth mAuth;
     private DatabaseReference mCustomerDatabase;
@@ -69,6 +70,8 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         mProfileImage = findViewById(R.id.profileImage);
         //mBack = findViewById(R.id.back);
         mConfirm = findViewById(R.id.confirm);
+        mLogout = findViewById(R.id.logoutButton);
+        mLogout.setOnClickListener(v -> logoutUser());
 
         // Initialize bottom navigation
         bottomNav = findViewById(R.id.bottomNavigation);
@@ -92,6 +95,21 @@ public class CustomerSettingsActivity extends AppCompatActivity {
 
         mConfirm.setOnClickListener(v -> saveUserInformation());
         //mBack.setOnClickListener(v -> finish());
+    }
+
+    private void logoutUser() {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Logging out...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        mAuth.signOut();
+        progressDialog.dismiss();
+
+        Intent intent = new Intent(CustomerSettingsActivity.this, SplashActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void setupBottomNavigation() {
