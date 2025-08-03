@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 
+import com.bumptech.glide.Glide;
 import com.example.dripwear.Adapter.CategoryAdapter;
 import com.example.dripwear.Adapter.PopularAdapter;
 import com.example.dripwear.Adapter.SliderAdapter;
@@ -36,9 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
-
-    // Add these new declarations for the user name feature
     private TextView userNameTextView;
+    private ImageView profileImageView; // Add this line
     private FirebaseAuth mAuth;
     private DatabaseReference mCustomerDatabase;
     private String userID;
@@ -51,9 +51,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         viewModel = new MainViewModel();
 
-        // New code block for the username feature
+        // Initialize views
         userNameTextView = findViewById(R.id.textView5);
+        profileImageView = findViewById(R.id.imageView2); // Add this line
         mAuth = FirebaseAuth.getInstance();
+
         if (mAuth.getCurrentUser() != null) {
             userID = mAuth.getCurrentUser().getUid();
             mCustomerDatabase = FirebaseDatabase.getInstance().getReference()
@@ -61,25 +63,46 @@ public class MainActivity extends AppCompatActivity {
                     .child("Customers")
                     .child(userID);
             getUserName();
+            getUserProfileImage(); // Add this method call
         }
 
         userNameTextView.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, CustomerSettingsActivity.class);
             startActivity(intent);
         });
-        // End of new code block
 
         initCategory();
         initSlider();
         initPopular();
         bottomNavigation();
 
-        // Find the bell icon and set a click listener
         ImageView bellIcon = findViewById(R.id.imageView5);
         bellIcon.setOnClickListener(v -> {
-            // Create an intent to start the NotificationsActivity
             Intent intent = new Intent(MainActivity.this, NotificationsActivity.class);
             startActivity(intent);
+        });
+    }
+
+    private void getUserProfileImage() {
+        mCustomerDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists() && snapshot.hasChild("profileImageUrl")) {
+                    String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
+                    Glide.with(MainActivity.this)
+                            .load(profileImageUrl)
+                            .placeholder(R.drawable.user) // Default image if loading fails
+                            .error(R.drawable.user) // Default image if URL is invalid
+                            .into(profileImageView);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this,
+                        "Failed to load profile image: " + error.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -163,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // New method to get the user's name from Firebase
     private void getUserName() {
         mCustomerDatabase.addValueEventListener(new ValueEventListener() {
             @Override
