@@ -74,6 +74,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testImplementation ("junit:junit:4.13.2")
     implementation ("junit:junit:4.13.2")
     implementation ("org.mockito:mockito-core:3.12.4")
     implementation ("org.mockito:mockito-inline:3.12.4")
