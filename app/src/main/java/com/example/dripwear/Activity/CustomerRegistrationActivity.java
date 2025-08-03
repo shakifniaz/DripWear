@@ -5,20 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.dripwear.R;
+import com.example.dripwear.Service.CustomerRegistrationService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CustomerRegistrationActivity extends AppCompatActivity {
 
@@ -28,6 +21,7 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     private ProgressDialog progressDialog;
+    private CustomerRegistrationService registrationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +41,8 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
 
     private void initializeFirebase() {
         mAuth = FirebaseAuth.getInstance();
-        if (mAuth == null) {
-            throw new IllegalStateException("Firebase Auth not initialized");
-        }
-
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        if (mDatabase == null) {
-            throw new IllegalStateException("Firebase Database not initialized");
-        }
+        registrationService = new CustomerRegistrationService(mAuth, mDatabase);
     }
 
     private void initializeViews() {
@@ -66,12 +54,6 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
         mPhone = findViewById(R.id.phone);
         mGenderGroup = findViewById(R.id.genderGroup);
         mRegister = findViewById(R.id.registerButton);
-
-        if (mEmail == null || mPassword == null || mPasswordConfirm == null ||
-                mName == null || mDob == null || mPhone == null ||
-                mGenderGroup == null || mRegister == null) {
-            throw new IllegalStateException("One or more views not found");
-        }
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
@@ -119,7 +101,19 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
         }
 
         showProgress("Registering...");
-        registerUser(email, password, name, phone, dob, gender);
+        registrationService.register(
+                this,
+                email, password, name, phone, dob, gender,
+                () -> {
+                    Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show();
+                    hideProgress();
+                    finish();
+                },
+                () -> {
+                    Toast.makeText(this, "Registration failed", Toast.LENGTH_SHORT).show();
+                    hideProgress();
+                }
+        );
     }
 
     private String getSelectedGender() {
@@ -148,74 +142,12 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
             return false;
         }
 
-        if (name.isEmpty()) {
-            mName.setError("Name is required");
-            mName.requestFocus();
-            return false;
-        }
-
-        if (dob.isEmpty()) {
-            mDob.setError("Date of birth is required");
-            mDob.requestFocus();
-            return false;
-        }
-
-        if (phone.isEmpty()) {
-            mPhone.setError("Phone number is required");
-            mPhone.requestFocus();
-            return false;
-        }
-
-        if (gender.isEmpty()) {
-            Toast.makeText(this, "Please select gender", Toast.LENGTH_SHORT).show();
+        if (name.isEmpty() || dob.isEmpty() || phone.isEmpty() || gender.isEmpty()) {
+            Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         return true;
-    }
-
-    private void registerUser(String email, String password, String name,
-                              String phone, String dob, String gender) {
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        saveUserData(email, name, phone, dob, gender);
-                    } else {
-                        hideProgress();
-                        Toast.makeText(this,
-                                "Registration failed: " + task.getException().getMessage(),
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
-    }
-
-    private void saveUserData(String email, String name, String phone, String dob, String gender) {
-        String userId = mAuth.getCurrentUser().getUid();
-        DatabaseReference userRef = mDatabase.child("Users").child("Customers").child(userId);
-
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("email", email);
-        userMap.put("name", name);
-        userMap.put("phone", phone);
-        userMap.put("dob", dob);
-        userMap.put("gender", gender);
-        userMap.put("timestamp", ServerValue.TIMESTAMP);
-
-        userRef.setValue(userMap)
-                .addOnSuccessListener(aVoid -> {
-                    hideProgress();
-                    Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(this, MainActivity.class));
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    hideProgress();
-                    Toast.makeText(this,
-                            "Failed to save user data: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
-                    // Delete user if data save fails
-                    mAuth.getCurrentUser().delete();
-                });
     }
 
     private void showProgress(String message) {
@@ -235,15 +167,15 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
         finish();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        hideProgress();
-    }
-
     public void setSelectedDate(String date) {
         if (mDob != null) {
             mDob.setText(date);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        hideProgress();
     }
 }

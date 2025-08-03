@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.firebase.database)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.ext.junit)
@@ -58,13 +59,26 @@ dependencies {
     implementation ("com.google.android.material:material:1.9.0")
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
 
+    implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-storage")
+
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
+
+
     //testing
     testImplementation(platform("org.junit:junit-bom:5.9.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testImplementation ("junit:junit:4.13.2")
     implementation ("junit:junit:4.13.2")
     implementation ("org.mockito:mockito-core:3.12.4")
     implementation ("org.mockito:mockito-inline:3.12.4")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.12.0")
     implementation ("androidx.test:core:1.4.0")
     implementation ("androidx.test.ext:junit:1.1.3")
     implementation ("androidx.test.espresso:espresso-core:3.4.0")
