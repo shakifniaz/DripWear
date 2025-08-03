@@ -153,6 +153,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         }
     }
 
+    // Synced with Firebase
     private void uploadProfileImage(String name, String phone, String dob) {
         StorageReference filePath = FirebaseStorage.getInstance().getReference()
                 .child("profile_images")
