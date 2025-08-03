@@ -74,7 +74,7 @@
                 android:paddingStart="12dp"
                 android:textSize="16sp"
                 tools:ignore="TextFields"
-                android:textColorHint="@color/new_color"
+                android:textColorHint="#A6FF5722"
                 android:textColor="@color/new_color"/>
 
             <TextView
@@ -97,7 +97,7 @@
                 android:hint=" Type your password : "
                 android:inputType="textPassword"
                 android:paddingLeft="12dp"
-                android:textColorHint="@color/new_color"
+                android:textColorHint="#A6FF5722"
                 android:textColor="@color/new_color"
                 android:textSize="16sp" />
 
