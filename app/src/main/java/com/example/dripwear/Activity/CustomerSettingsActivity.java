@@ -73,7 +73,6 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         mLogout = findViewById(R.id.logoutButton);
         mLogout.setOnClickListener(v -> logoutUser());
 
-        // Initialize bottom navigation
         bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setItemSelected(R.id.profile, true);
         setupBottomNavigation();
@@ -162,7 +161,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
                         String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
                         Glide.with(CustomerSettingsActivity.this)
                                 .load(profileImageUrl)
-                                .dontTransform()
+                                .centerCrop()
                                 .into(mProfileImage);
                     }
                 }
@@ -201,20 +200,20 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         }
 
         if (resultUri != null) {
-            uploadProfileImage(name, phone, dob);
+            uploadProfileImage(name, phone, dob, resultUri);
         } else {
             updateUserData(name, phone, dob, null);
         }
     }
 
-    // Synced with Firebase
-    private void uploadProfileImage(String name, String phone, String dob) {
+    //This method now accepts a Uri, loads a compressed bitmap from it and uploads it.
+    private void uploadProfileImage(String name, String phone, String dob, Uri imageUri) {
         StorageReference filePath = FirebaseStorage.getInstance().getReference()
                 .child("profile_images")
                 .child(userID);
 
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), resultUri);
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
             byte[] data = baos.toByteArray();
@@ -237,6 +236,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
                     updateUserData(name, phone, dob, downloadUri.toString());
+                    resultUri = null;
                 } else {
                     Toast.makeText(CustomerSettingsActivity.this,
                             "Upload failed: " + task.getException().getMessage(),
@@ -284,7 +284,10 @@ public class CustomerSettingsActivity extends AppCompatActivity {
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             resultUri = data.getData();
-            mProfileImage.setImageURI(resultUri);
+            Glide.with(this)
+                    .load(resultUri)
+                    .centerCrop()
+                    .into(mProfileImage);
         }
     }
 }
