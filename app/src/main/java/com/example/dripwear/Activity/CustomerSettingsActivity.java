@@ -157,13 +157,13 @@ public class CustomerSettingsActivity extends AppCompatActivity {
                         mDobField.setText(dob);
                     }
                     if (snapshot.hasChild("profileImageUrl")) {
-                        mProfileImageUrl = snapshot.child("profileImageUrl").getValue(String.class); // Store the URL
+                        mProfileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
                         Glide.with(CustomerSettingsActivity.this)
                                 .load(mProfileImageUrl)
                                 .centerCrop()
                                 .into(mProfileImage);
                     } else {
-                        mProfileImageUrl = null; // Ensure it's null if no image exists
+                        mProfileImageUrl = null;
                     }
                 }
             }
@@ -235,8 +235,12 @@ public class CustomerSettingsActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
-                    updateUserData(name, phone, dob, downloadUri.toString());
-                    resultUri = null;
+                    if (downloadUri != null) {
+                        updateUserData(name, phone, dob, downloadUri.toString());
+                        resultUri = null;
+                    } else {
+                        Toast.makeText(CustomerSettingsActivity.this, "Image upload successful but download URL is null.", Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     Toast.makeText(CustomerSettingsActivity.this,
                             "Upload failed: " + task.getException().getMessage(),
