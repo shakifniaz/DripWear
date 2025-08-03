@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
+
 }
 
 android {
@@ -78,6 +79,7 @@ dependencies {
     implementation ("junit:junit:4.13.2")
     implementation ("org.mockito:mockito-core:3.12.4")
     implementation ("org.mockito:mockito-inline:3.12.4")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.12.0")
     implementation ("androidx.test:core:1.4.0")
     implementation ("androidx.test.ext:junit:1.1.3")
     implementation ("androidx.test.espresso:espresso-core:3.4.0")
