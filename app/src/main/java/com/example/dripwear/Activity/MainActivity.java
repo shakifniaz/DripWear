@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         viewModel = new MainViewModel();
 
-        // New code block for the username feature
         userNameTextView = findViewById(R.id.textView5);
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
@@ -67,17 +66,14 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, CustomerSettingsActivity.class);
             startActivity(intent);
         });
-        // End of new code block
 
         initCategory();
         initSlider();
         initPopular();
         bottomNavigation();
 
-        // Find the bell icon and set a click listener
         ImageView bellIcon = findViewById(R.id.imageView5);
         bellIcon.setOnClickListener(v -> {
-            // Create an intent to start the NotificationsActivity
             Intent intent = new Intent(MainActivity.this, NotificationsActivity.class);
             startActivity(intent);
         });
@@ -91,12 +87,15 @@ public class MainActivity extends AppCompatActivity {
                 if (id == R.id.favorites) {
                     startActivity(new Intent(MainActivity.this, FavoritesActivity.class));
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    finish();
                 } else if (id == R.id.cart) {
                     startActivity(new Intent(MainActivity.this, CartActivity.class));
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    finish();
                 } else if (id == R.id.profile) {
                     startActivity(new Intent(MainActivity.this, CustomerSettingsActivity.class));
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    finish();
                 }
             }
         });
@@ -163,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // New method to get the user's name from Firebase
     private void getUserName() {
         mCustomerDatabase.addValueEventListener(new ValueEventListener() {
             @Override
