@@ -78,6 +78,13 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         setupBottomNavigation();
 
         mAuth = FirebaseAuth.getInstance();
+
+        // CRITICAL FIX: Check if the user is logged in at the start
+        if (mAuth.getCurrentUser() == null) {
+            logoutUser();
+            return;
+        }
+
         userID = mAuth.getCurrentUser().getUid();
         mCustomerDatabase = FirebaseDatabase.getInstance().getReference()
                 .child("Users")
@@ -178,6 +185,12 @@ public class CustomerSettingsActivity extends AppCompatActivity {
     }
 
     private void saveUserInformation() {
+        // FIX: Check if user session is still active
+        if (mAuth.getCurrentUser() == null) {
+            logoutUser();
+            return;
+        }
+
         String name = mNameField.getText().toString().trim();
         String phone = mPhoneField.getText().toString().trim();
         String dob = mDobField.getText().toString().trim();
@@ -247,19 +260,29 @@ public class CustomerSettingsActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 }
             });
-        } catch (IOException e) {
+        } catch (Exception e) {
             Toast.makeText(this, "Error processing image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void updateUserData(String name, String phone, String dob, String profileImageUrl) {
         Map<String, Object> userInfo = new HashMap<>();
-        userInfo.put("name", name);
-        userInfo.put("phone", phone);
-        userInfo.put("dob", dob);
-
+        if (!name.isEmpty()) {
+            userInfo.put("name", name);
+        }
+        if (!phone.isEmpty()) {
+            userInfo.put("phone", phone);
+        }
+        if (!dob.isEmpty()) {
+            userInfo.put("dob", dob);
+        }
         if (profileImageUrl != null) {
             userInfo.put("profileImageUrl", profileImageUrl);
+        }
+
+        if (userInfo.isEmpty()) {
+            Toast.makeText(this, "No information to update.", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         ProgressDialog progressDialog = new ProgressDialog(this);
@@ -267,7 +290,8 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        mCustomerDatabase.setValue(userInfo)
+        // FIX: Use updateChildren() to prevent overwriting existing data.
+        mCustomerDatabase.updateChildren(userInfo)
                 .addOnCompleteListener(task -> {
                     progressDialog.dismiss();
                     if (task.isSuccessful()) {
