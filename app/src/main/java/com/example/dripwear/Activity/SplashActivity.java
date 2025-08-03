@@ -11,18 +11,24 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class SplashActivity extends AppCompatActivity {
     private ActivitySplashBinding binding;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
-            // Initialize Firebase before anything else
             FirebaseApp.initializeApp(this);
+            mAuth = FirebaseAuth.getInstance();
+
+            if (mAuth.getCurrentUser() != null) {
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+                return;
+            }
 
             super.onCreate(savedInstanceState);
             binding = ActivitySplashBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
 
-            // Test Firebase
             try {
                 FirebaseAuth.getInstance().getCurrentUser();
             } catch (Exception e) {

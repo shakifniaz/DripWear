@@ -14,6 +14,7 @@ import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 public class FavoritesActivity extends AppCompatActivity {
     private ActivityFavoritesBinding binding;
     private ManagmentFavorites managementFavorites;
+    private ChipNavigationBar bottomNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +24,7 @@ public class FavoritesActivity extends AppCompatActivity {
 
         managementFavorites = new ManagmentFavorites(this);
 
-        ChipNavigationBar bottomNav = findViewById(R.id.bottomNavigation);
+        bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setItemSelected(R.id.favorites, true);
 
         bottomNav.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
@@ -36,12 +37,25 @@ public class FavoritesActivity extends AppCompatActivity {
                 } else if (id == R.id.cart) {
                     startActivity(new Intent(FavoritesActivity.this, CartActivity.class));
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    finish();
+                } else if (id == R.id.profile) {
+                    startActivity(new Intent(FavoritesActivity.this, CustomerSettingsActivity.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    finish();
                 }
+
             }
         });
 
         initFavoritesList();
         setVariable();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (bottomNav != null) {
+            bottomNav.setItemSelected(R.id.favorites, true);
+        }
     }
 
     private void initFavoritesList() {
