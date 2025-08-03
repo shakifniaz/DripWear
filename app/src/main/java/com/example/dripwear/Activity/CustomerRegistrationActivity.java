@@ -179,7 +179,11 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Intent intent = new Intent(CustomerRegistrationActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
                         saveUserData(email, name, phone, dob, gender);
+                        finish();
                     } else {
                         hideProgress();
                         Toast.makeText(this,
