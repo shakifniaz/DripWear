@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/main"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              tools:context=".Activity.CustomerSettingsActivity"
-              android:background="@color/lightGrey">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightGrey"
+    tools:context=".Activity.CustomerSettingsActivity">
 
-    <TextView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottomNavigation"
+        android:orientation="vertical">
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/orange"
@@ -20,13 +25,13 @@
             android:gravity="center"
             android:textAlignment="center" />
 
-    <FrameLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="788dp"
+            android:layout_height="match_parent"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="0dp">
 
-        <LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"
@@ -38,18 +43,18 @@
                 android:paddingTop="100dp"
                 android:paddingBottom="30dp">
 
-            <LinearLayout
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="15dp">
 
-                <TextView
+                    <TextView
                         android:layout_width="77dp"
                         android:layout_height="wrap_content"
                         android:text="Name : "
                         android:textColor="@color/new_color"
                         android:textSize="14dp" />
-                <EditText
+                    <EditText
                         android:id="@+id/name"
                         android:layout_width="240dp"
                         android:layout_height="40dp"
@@ -59,18 +64,18 @@
                         android:textColorHint="@color/new_color"
                         android:textSize="13dp"
                         android:textColor="@color/new_color"/>
-            </LinearLayout>
-            <LinearLayout
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="15dp">
-                <TextView
+                    <TextView
                         android:layout_width="77dp"
                         android:layout_height="wrap_content"
                         android:text="DOB : "
                         android:textSize="14dp"
                         android:textColor="@color/new_color"/>
-                <EditText
+                    <EditText
                         android:id="@+id/dob"
                         android:layout_width="240dp"
                         android:layout_height="40dp"
@@ -80,18 +85,18 @@
                         android:textColorHint="@color/new_color"
                         android:textSize="13dp"
                         android:textColor="@color/new_color"/>
-            </LinearLayout>
-            <LinearLayout
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="15dp">
-                <TextView
+                    <TextView
                         android:layout_width="77dp"
                         android:layout_height="wrap_content"
                         android:text="Phone : "
                         android:textSize="14dp"
                         android:textColor="@color/new_color"/>
-                <EditText
+                    <EditText
                         android:id="@+id/customerPhone"
                         android:layout_width="240dp"
                         android:layout_height="40dp"
@@ -101,13 +106,14 @@
                         android:textColorHint="@color/new_color"
                         android:textSize="14dp"
                         android:textColor="@color/new_color"/>
-            </LinearLayout>
-            <LinearLayout
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="50dp">
-                <Button
+                    <!--
+                    <Button
                         android:id="@+id/back"
                         android:layout_width="140dp"
                         android:layout_height="50dp"
@@ -115,19 +121,19 @@
                         android:text="Back"
                         android:textColor="@color/orange"
                         android:textSize="18dp" />
-                <Button
+                        -->
+                    <Button
                         android:id="@+id/confirm"
                         android:layout_width="140dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="10dp"
                         android:background="@drawable/button"
-
                         android:text="Confirm"
                         android:textColor="@color/white"
                         android:textSize="18dp" />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-        <ImageView
+            <ImageView
                 android:id="@+id/profileImage"
                 android:layout_width="170dp"
                 android:layout_height="170dp"
@@ -135,7 +141,20 @@
                 android:layout_marginTop="80dp"
                 android:padding="10dp"
                 android:src="@drawable/border4" />
-    </FrameLayout>
+        </FrameLayout>
+    </LinearLayout>
 
-
-</LinearLayout>
+    <com.ismaeldivita.chipnavigation.ChipNavigationBar
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:padding="4dp"
+        app:cnb_menuResource="@menu/bottom_menu"
+        app:cnb_orientationMode="horizontal"
+        app:cnb_radius="50dp"
+        app:cnb_unselectedColor="@color/black"
+        app:cnb_iconColor="@color/white"
+        app:cnb_iconSize="20dp"/>
+</RelativeLayout>
