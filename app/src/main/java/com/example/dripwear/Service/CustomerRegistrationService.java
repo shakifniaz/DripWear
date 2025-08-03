@@ -12,7 +12,7 @@ import com.google.firebase.database.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CustomerRegistrationService {
+public class CustomerRegistrationService{
 
     private final FirebaseAuth mAuth;
     private final DatabaseReference mDatabase;
