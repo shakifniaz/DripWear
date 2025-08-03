@@ -90,10 +90,9 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && snapshot.hasChild("profileImageUrl")) {
                     String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
-                    Glide.with(MainActivity.this)
+                    Glide.with(getApplicationContext())
                             .load(profileImageUrl)
-                            .placeholder(R.drawable.user) // Default image if loading fails
-                            .error(R.drawable.user) // Default image if URL is invalid
+                            .dontTransform()
                             .into(profileImageView);
                 }
             }
