@@ -51,6 +51,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
     private String userID;
     private Uri resultUri;
     private ChipNavigationBar bottomNav;
+    private String mProfileImageUrl;
     private static final int PICK_IMAGE_REQUEST = 1;
 
     @Override
@@ -68,12 +69,10 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         mPhoneField = findViewById(R.id.customerPhone);
         mDobField = findViewById(R.id.dob);
         mProfileImage = findViewById(R.id.profileImage);
-        //mBack = findViewById(R.id.back);
         mConfirm = findViewById(R.id.confirm);
         mLogout = findViewById(R.id.logoutButton);
         mLogout.setOnClickListener(v -> logoutUser());
 
-        // Initialize bottom navigation
         bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setItemSelected(R.id.profile, true);
         setupBottomNavigation();
@@ -94,7 +93,6 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         });
 
         mConfirm.setOnClickListener(v -> saveUserInformation());
-        //mBack.setOnClickListener(v -> finish());
     }
 
     private void logoutUser() {
@@ -159,11 +157,13 @@ public class CustomerSettingsActivity extends AppCompatActivity {
                         mDobField.setText(dob);
                     }
                     if (snapshot.hasChild("profileImageUrl")) {
-                        String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
+                        mProfileImageUrl = snapshot.child("profileImageUrl").getValue(String.class); // Store the URL
                         Glide.with(CustomerSettingsActivity.this)
-                                .load(profileImageUrl)
-                                .dontTransform()
+                                .load(mProfileImageUrl)
+                                .centerCrop()
                                 .into(mProfileImage);
+                    } else {
+                        mProfileImageUrl = null; // Ensure it's null if no image exists
                     }
                 }
             }
@@ -201,20 +201,19 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         }
 
         if (resultUri != null) {
-            uploadProfileImage(name, phone, dob);
+            uploadProfileImage(name, phone, dob, resultUri);
         } else {
-            updateUserData(name, phone, dob, null);
+            updateUserData(name, phone, dob, mProfileImageUrl);
         }
     }
 
-    // Synced with Firebase
-    private void uploadProfileImage(String name, String phone, String dob) {
+    private void uploadProfileImage(String name, String phone, String dob, Uri imageUri) {
         StorageReference filePath = FirebaseStorage.getInstance().getReference()
                 .child("profile_images")
                 .child(userID);
 
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), resultUri);
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
             byte[] data = baos.toByteArray();
@@ -237,6 +236,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
                     updateUserData(name, phone, dob, downloadUri.toString());
+                    resultUri = null;
                 } else {
                     Toast.makeText(CustomerSettingsActivity.this,
                             "Upload failed: " + task.getException().getMessage(),
@@ -284,7 +284,10 @@ public class CustomerSettingsActivity extends AppCompatActivity {
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             resultUri = data.getData();
-            mProfileImage.setImageURI(resultUri);
+            Glide.with(this)
+                    .load(resultUri)
+                    .centerCrop()
+                    .into(mProfileImage);
         }
     }
 }

@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
     private TextView userNameTextView;
-    private ImageView profileImageView; // Add this line
+    private ImageView profileImageView;
     private FirebaseAuth mAuth;
     private DatabaseReference mCustomerDatabase;
     private String userID;
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize views
         userNameTextView = findViewById(R.id.textView5);
-        profileImageView = findViewById(R.id.imageView2); // Add this line
+        profileImageView = findViewById(R.id.imageView2);
         mAuth = FirebaseAuth.getInstance();
 
         if (mAuth.getCurrentUser() != null) {
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                     .child("Customers")
                     .child(userID);
             getUserName();
-            getUserProfileImage(); // Add this method call
+            getUserProfileImage();
         }
 
         userNameTextView.setOnClickListener(v -> {
@@ -83,17 +83,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // Add this method to fetch and display the profile image
     private void getUserProfileImage() {
         mCustomerDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && snapshot.hasChild("profileImageUrl")) {
                     String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
-                    Glide.with(MainActivity.this)
+                    Glide.with(getApplicationContext())
                             .load(profileImageUrl)
-                            .placeholder(R.drawable.user) // Default image if loading fails
-                            .error(R.drawable.user) // Default image if URL is invalid
+                            .centerCrop()
                             .into(profileImageView);
                 }
             }
