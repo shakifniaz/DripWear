@@ -1,8 +1,7 @@
 package com.example.dripwear.Activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +10,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.dripwear.R;
-import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 public class NotificationsActivity extends AppCompatActivity {
 
@@ -26,22 +24,8 @@ public class NotificationsActivity extends AppCompatActivity {
             return insets;
         });
 
-        ChipNavigationBar bottomNav = findViewById(R.id.bottomNavigation);
-        bottomNav.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(int id) {
-                if (id == R.id.home) {
-                    startActivity(new Intent(NotificationsActivity.this, MainActivity.class));
-                    finish();
-                } else if (id == R.id.favorites) {
-                    startActivity(new Intent(NotificationsActivity.this, FavoritesActivity.class));
-                    finish();
-                } else if (id == R.id.cart) {
-                    startActivity(new Intent(NotificationsActivity.this, CartActivity.class));
-                    finish();
-                }
-            }
-        });
+        ImageButton backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> finish());
 
     }
 }

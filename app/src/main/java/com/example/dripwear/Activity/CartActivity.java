@@ -22,6 +22,7 @@ public class CartActivity extends AppCompatActivity {
     private ActivityCartBinding binding;
     private double tax;
     private ManagmentCart managementCart;
+    private ChipNavigationBar bottomNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,8 @@ public class CartActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         managementCart = new ManagmentCart(this);
-        ChipNavigationBar bottomNav = findViewById(R.id.bottomNavigation);
+
+        bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setItemSelected(R.id.cart, true);
 
         bottomNav.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
@@ -44,6 +46,11 @@ public class CartActivity extends AppCompatActivity {
                 } else if (id == R.id.favorites) {
                     startActivity(new Intent(CartActivity.this, FavoritesActivity.class));
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                    finish();
+                } else if (id == R.id.profile) {
+                    startActivity(new Intent(CartActivity.this, CustomerSettingsActivity.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    finish();
                 }
             }
         });
@@ -51,6 +58,13 @@ public class CartActivity extends AppCompatActivity {
         calculatorCart();
         setVariable();
         initCartList();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (bottomNav != null) {
+            bottomNav.setItemSelected(R.id.cart, true);
+        }
     }
 
     private void initCartList() {
