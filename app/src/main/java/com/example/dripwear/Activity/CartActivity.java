@@ -50,6 +50,7 @@ public class CartActivity extends AppCompatActivity {
                 } else if (id == R.id.profile) {
                     startActivity(new Intent(CartActivity.this, CustomerSettingsActivity.class));
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    finish();
                 }
             }
         });
