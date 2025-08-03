@@ -62,7 +62,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/shareBtn"
                     app:layout_constraintEnd_toStartOf="@+id/shareBtn"
                     app:layout_constraintTop_toTopOf="@+id/shareBtn"
-                    app:srcCompat="@drawable/fav" />
+                    app:srcCompat="@drawable/fav1" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/picList"
