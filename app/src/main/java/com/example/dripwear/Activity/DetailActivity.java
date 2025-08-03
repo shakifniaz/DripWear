@@ -136,11 +136,13 @@ public class DetailActivity extends AppCompatActivity {
 
     private void updateFavoriteButton() {
         if (isFavorite) {
-            binding.favBtn.setImageResource(R.drawable.fav);
-            binding.favBtn.setColorFilter(ContextCompat.getColor(this, R.color.orange));
+            binding.favBtn.setImageResource(R.drawable.fav1);
+            binding.favBtn.setImageResource(R.drawable.favv2);
+            //binding.favBtn.setColorFilter(ContextCompat.getColor(this, R.color.orange));
         } else {
-            binding.favBtn.setImageResource(R.drawable.fav);
-            binding.favBtn.setColorFilter(ContextCompat.getColor(this, R.color.black));
+            binding.favBtn.setImageResource(R.drawable.favv2);
+            binding.favBtn.setImageResource(R.drawable.fav1);
+            //binding.favBtn.setColorFilter(ContextCompat.getColor(this, R.color.black));
         }
     }
 }
