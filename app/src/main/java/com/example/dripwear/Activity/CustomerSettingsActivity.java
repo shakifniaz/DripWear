@@ -51,6 +51,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
     private String userID;
     private Uri resultUri;
     private ChipNavigationBar bottomNav;
+    private String mProfileImageUrl;
     private static final int PICK_IMAGE_REQUEST = 1;
 
     @Override
@@ -68,7 +69,6 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         mPhoneField = findViewById(R.id.customerPhone);
         mDobField = findViewById(R.id.dob);
         mProfileImage = findViewById(R.id.profileImage);
-        //mBack = findViewById(R.id.back);
         mConfirm = findViewById(R.id.confirm);
         mLogout = findViewById(R.id.logoutButton);
         mLogout.setOnClickListener(v -> logoutUser());
@@ -93,7 +93,6 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         });
 
         mConfirm.setOnClickListener(v -> saveUserInformation());
-        //mBack.setOnClickListener(v -> finish());
     }
 
     private void logoutUser() {
@@ -158,11 +157,13 @@ public class CustomerSettingsActivity extends AppCompatActivity {
                         mDobField.setText(dob);
                     }
                     if (snapshot.hasChild("profileImageUrl")) {
-                        String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
+                        mProfileImageUrl = snapshot.child("profileImageUrl").getValue(String.class); // Store the URL
                         Glide.with(CustomerSettingsActivity.this)
-                                .load(profileImageUrl)
+                                .load(mProfileImageUrl)
                                 .centerCrop()
                                 .into(mProfileImage);
+                    } else {
+                        mProfileImageUrl = null; // Ensure it's null if no image exists
                     }
                 }
             }
@@ -202,11 +203,10 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         if (resultUri != null) {
             uploadProfileImage(name, phone, dob, resultUri);
         } else {
-            updateUserData(name, phone, dob, null);
+            updateUserData(name, phone, dob, mProfileImageUrl);
         }
     }
 
-    //This method now accepts a Uri, loads a compressed bitmap from it and uploads it.
     private void uploadProfileImage(String name, String phone, String dob, Uri imageUri) {
         StorageReference filePath = FirebaseStorage.getInstance().getReference()
                 .child("profile_images")
