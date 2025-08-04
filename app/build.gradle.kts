@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
-
 }
 
 android {
@@ -75,10 +74,9 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
     testImplementation ("junit:junit:4.13.2")
-    testImplementation ("org.mockito:mockito-junit-jupiter:5.3.1")
+    testImplementation ("org.mockito:mockito-core:5.3.1")
+    testImplementation ("org.mockito:mockito-junit-jupiter:5.3.1") //For JUnit 5 support
     implementation ("junit:junit:4.13.2")
     implementation ("org.mockito:mockito-core:3.12.4")
     implementation ("org.mockito:mockito-inline:3.12.4")

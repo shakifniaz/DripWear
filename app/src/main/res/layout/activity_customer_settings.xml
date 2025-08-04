@@ -17,10 +17,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/orange"
+            android:background="@color/lightGrey"
             android:text="User Profile"
-            android:textColor="@color/white"
+            android:textColor="@color/new_color"
             android:textSize="26sp"
+            android:textStyle="bold"
             android:padding="9dp"
             android:gravity="center"
             android:textAlignment="center" />
@@ -158,7 +159,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="80dp"
                 android:padding="10dp"
-                android:src="@drawable/border4" />
+                android:src="@drawable/baseline_account_box_24" />
         </FrameLayout>
     </LinearLayout>
 
