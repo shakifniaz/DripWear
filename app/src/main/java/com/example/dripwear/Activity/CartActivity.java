@@ -65,13 +65,13 @@ public class CartActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (bottomNav != null) {
-            //Ensure the cart item is always selected when returning to this activity
+            //Ensure the cart item is always selected
             bottomNav.setItemSelected(R.id.cart, true);
         }
     }
 
     private void initCartList() {
-        //Toggle visibility of the empty cart message or the cart list
+        //Toggle visibility of empty cart message
         if (managementCart.getListCart().isEmpty()){
             binding.emptyTxt.setVisibility(View.VISIBLE);
             binding.scrollView4.setVisibility(View.GONE);
@@ -80,9 +80,9 @@ public class CartActivity extends AppCompatActivity {
             binding.scrollView4.setVisibility(View.VISIBLE);
         }
 
-        //Set up the RecyclerView for the cart items
+        //Set up the RecyclerView for cart items
         binding.cartView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        //Create and set the adapter for the cart, passing the listener for updates
+        //Create and set the adapter
         binding.cartView.setAdapter(new CartAdapter(
                 managementCart.getListCart(),
                 this,
@@ -92,22 +92,23 @@ public class CartActivity extends AppCompatActivity {
     }
 
     private void setVariable() {
+        //Placeholder
         //binding.backBtn.setOnClickListener(v -> finish());
     }
 
     private void calculatorCart() {
-        //Define the tax rate
+        //Define tax rate
         double percentTax = 0.02;
-        //Define the fixed delivery fee
+        //Define fixed delivery fee
         double delivery = 10;
-        //Calculate the tax based on the total cart value
+        //Calculate tax
         tax = Math.round((managementCart.getTotalFee()*percentTax*100.0))/100.0;
-        //Calculate the final total including tax and delivery
+        //Calculate final total
         double total = Math.round((managementCart.getTotalFee()+tax+delivery)*100.0)/100.0;
-        //Get the total price of all items before tax and delivery
+        //Get total price of items
         double itemTotal = Math.round((managementCart.getTotalFee()*100.0))/100.0;
 
-        //Update the UI with the calculated values
+        //Update UI with values
         binding.totalFeeTxt.setText("$ "+itemTotal);
         binding.taxTxt.setText("$ "+delivery);
         binding.deliveryTxt.setText("$ "+delivery);

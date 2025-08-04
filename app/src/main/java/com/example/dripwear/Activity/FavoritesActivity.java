@@ -22,13 +22,13 @@ public class FavoritesActivity extends AppCompatActivity {
         binding = ActivityFavoritesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //Initialize the favorites management helper class
+        //Initialize favorites management class
         managementFavorites = new ManagmentFavorites(this);
 
         bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setItemSelected(R.id.favorites, true);
 
-        //Handle bottom navigation item clicks to switch between activities
+        //Handle bottom navigation clicks
         bottomNav.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
             @Override
             public void onItemSelected(int id) {
@@ -55,13 +55,13 @@ public class FavoritesActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (bottomNav != null) {
-            //Ensure the favorites item is selected whenever the activity resumes
+            //Ensure favorites item selected
             bottomNav.setItemSelected(R.id.favorites, true);
         }
     }
 
     private void initFavoritesList() {
-        //Check if the favorites list is empty and show the appropriate UI
+        //Check if favorites list is empty
         if (managementFavorites.getListFav().isEmpty()) {
             binding.emptyTxt.setVisibility(View.VISIBLE);
             binding.scrollView4.setVisibility(View.GONE);
@@ -70,12 +70,12 @@ public class FavoritesActivity extends AppCompatActivity {
             binding.scrollView4.setVisibility(View.VISIBLE);
         }
 
-        //Set up the RecyclerView to display the favorite items
+        //Setup RecyclerView for favorites
         binding.cartView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         binding.cartView.setAdapter(new FavoritesAdapter(managementFavorites.getListFav(), this));    }
 
     private void setVariable() {
-        //This method is currently a placeholder
+        //Placeholder
         //binding.backBtn.setOnClickListener(v -> finish());
     }
 }

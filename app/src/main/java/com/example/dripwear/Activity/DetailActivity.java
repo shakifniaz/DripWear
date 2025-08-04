@@ -39,11 +39,11 @@ public class DetailActivity extends AppCompatActivity {
         binding = ActivityDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //Initialize our cart and favorites management helper classes
+        //Initialize cart and favorites
         managmentCart = new ManagmentCart(this);
         managmentFavorites = new ManagmentFavorites(this);
 
-        //Fetch the item details and set up the UI
+        //Fetch item details, set up UI
         getBundles();
         initPicList();
         initSize();
@@ -51,57 +51,57 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void initColor() {
-        //Set up the horizontal RecyclerView for product colors
+        //Setup horizontal RecyclerView for colors
         binding.recyclerColor.setAdapter(new ColorAdapter(object.getColor()));
         binding.recyclerColor.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 
     private void initSize() {
-        //Set up the horizontal RecyclerView for product sizes
+        //Setup horizontal RecyclerView for sizes
         binding.recyclerSize.setAdapter(new SizeAdapter(object.getSize()));
         binding.recyclerSize.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
     }
 
     private void initPicList() {
-        //Get the list of pictures for this item
+        //Get list of pictures
         ArrayList<String> picList=new ArrayList<>(object.getPicUrl());
 
-        //Load the first picture into the main image view using Glide
+        //Load first picture with Glide
         Glide.with(this)
                 .load(picList.get(0))
                 .into((binding.pic));
 
-        //Set up the horizontal RecyclerView for the other pictures
+        //Setup horizontal RecyclerView for pictures
         binding.picList.setAdapter(new PicListAdapter(picList,binding.pic));
         binding.picList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 
     private void getBundles() {
-        //Get the item object passed from the previous activity
+        //Get the item object
         object = (ItemsModel) getIntent().getSerializableExtra("object");
 
-        //Set the UI elements with data from the item object
+        //Set UI with item data
         binding.titleTxt.setText(object.getTitle());
         binding.priceTxt.setText("$"+object.getPrice());
         binding.oldPriceTxt.setText("$"+object.getOldPrice());
-        //Add a strikethrough to the old price text
+        //Add strikethrough to old price
         binding.oldPriceTxt.setPaintFlags(binding.oldPriceTxt.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
         binding.descriptionTxt.setText(object.getDescription());
 
-        //Check if the current item is already in the user's favorites
+        //Check if item is a favorite
         isFavorite = isItemInFavorites(object);
         updateFavoriteButton();
 
-        //Set up the click listener for the "add to cart" button
+        //Set add to cart listener
         binding.addToCartBtn.setOnClickListener(v -> {
             object.setNumberInCart(numberOrder);
             managmentCart.insertItem(object);
         });
 
-        //Set up the click listener for the favorites button
+        //Set favorites button listener
         binding.favBtn.setOnClickListener(v -> {
             if (isFavorite) {
-                //If it's a favorite, remove it
+                //If favorite, remove it
                 ArrayList<ItemsModel> favorites = managmentFavorites.getListFav();
                 int position = -1;
                 for (int i = 0; i < favorites.size(); i++) {
@@ -117,19 +117,19 @@ public class DetailActivity extends AppCompatActivity {
                     });
                 }
             } else {
-                //If it's not a favorite, add it
+                //If not favorite, add it
                 managmentFavorites.insertItem(object);
                 isFavorite = true;
                 updateFavoriteButton();
             }
         });
 
-        //Set up the click listener for the back button to close the activity
+        //Set back button listener
         binding.backBtn.setOnClickListener(v -> finish());
     }
 
     private boolean isItemInFavorites(ItemsModel item) {
-        //A helper method to check if an item is already in the favorites list
+        //Helper to check if item is in favorites
         ArrayList<ItemsModel> favoritesList = managmentFavorites.getListFav();
         for (ItemsModel favoriteItem : favoritesList) {
             if (favoriteItem.getTitle().equals(item.getTitle())) {
@@ -140,7 +140,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private int getItemPosition(ItemsModel item) {
-        //A helper method to find the position of an item in the favorites list
+        //Helper to find item position
         for (int i = 0; i < managmentFavorites.getListFav().size(); i++) {
             if (managmentFavorites.getListFav().get(i).getTitle().equals(item.getTitle())) {
                 return i;
@@ -150,7 +150,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void updateFavoriteButton() {
-        //Update the favorites button icon based on the favorite status
+        //Update favorite button icon
         if (isFavorite) {
             //NOTE: There are conflicting calls here
             binding.favBtn.setImageResource(R.drawable.fav1);
