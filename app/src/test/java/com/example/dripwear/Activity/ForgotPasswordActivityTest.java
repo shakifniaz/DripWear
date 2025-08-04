@@ -11,7 +11,6 @@ class ForgotPasswordActivityTest {
 
     @ParameterizedTest
     @CsvSource({
-            //emailInput, expectedIsValid
             "'test@example.com', true",
             "'user.name+tag@domain.com', true",
             "'', false",
@@ -31,7 +30,6 @@ class ForgotPasswordActivityTest {
 
     @ParameterizedTest
     @CsvSource({
-            //emailInput, shouldAllowReset
             "'test@example.com', true",
             "'valid.email@domain.co.uk', true",
             "'', false",
