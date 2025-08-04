@@ -28,14 +28,16 @@ public class CartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        binding = ActivityCartBinding.inflate(getLayoutInflater()); //This line was modified
+        binding = ActivityCartBinding.inflate(getLayoutInflater()); //Inflate the layout using View Binding.
         setContentView(binding.getRoot());
 
+        //Initialize the cart management helper class
         managementCart = new ManagmentCart(this);
 
         bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setItemSelected(R.id.cart, true);
 
+        //Setup the bottom navigation to handle different activity transitions
         bottomNav.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
             @Override
             public void onItemSelected(int id) {
@@ -63,11 +65,13 @@ public class CartActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (bottomNav != null) {
+            //Ensure the cart item is always selected when returning to this activity
             bottomNav.setItemSelected(R.id.cart, true);
         }
     }
 
     private void initCartList() {
+        //Toggle visibility of the empty cart message or the cart list
         if (managementCart.getListCart().isEmpty()){
             binding.emptyTxt.setVisibility(View.VISIBLE);
             binding.scrollView4.setVisibility(View.GONE);
@@ -76,12 +80,14 @@ public class CartActivity extends AppCompatActivity {
             binding.scrollView4.setVisibility(View.VISIBLE);
         }
 
+        //Set up the RecyclerView for the cart items
         binding.cartView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        //Create and set the adapter for the cart, passing the listener for updates
         binding.cartView.setAdapter(new CartAdapter(
                 managementCart.getListCart(),
                 this,
                 this::calculatorCart,
-                managementCart  // Add this parameter
+                managementCart
         ));
     }
 
@@ -90,12 +96,18 @@ public class CartActivity extends AppCompatActivity {
     }
 
     private void calculatorCart() {
+        //Define the tax rate
         double percentTax = 0.02;
+        //Define the fixed delivery fee
         double delivery = 10;
+        //Calculate the tax based on the total cart value
         tax = Math.round((managementCart.getTotalFee()*percentTax*100.0))/100.0;
+        //Calculate the final total including tax and delivery
         double total = Math.round((managementCart.getTotalFee()+tax+delivery)*100.0)/100.0;
+        //Get the total price of all items before tax and delivery
         double itemTotal = Math.round((managementCart.getTotalFee()*100.0))/100.0;
 
+        //Update the UI with the calculated values
         binding.totalFeeTxt.setText("$ "+itemTotal);
         binding.taxTxt.setText("$ "+delivery);
         binding.deliveryTxt.setText("$ "+delivery);
