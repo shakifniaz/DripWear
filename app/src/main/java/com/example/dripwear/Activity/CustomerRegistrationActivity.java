@@ -35,6 +35,7 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_customer_registration);
 
         try {
+            //Initializing Firebase and all UI components
             initializeFirebase();
             initializeViews();
             setupDatePicker();
@@ -58,6 +59,7 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
+        //Finding and assigning all the EditTexts, Buttons, and other UI elements
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
         mPasswordConfirm = findViewById(R.id.password_confirm);
@@ -78,6 +80,7 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
     }
 
     private void setupDatePicker() {
+        //Attaching a click listener to the date of birth field to show a date picker dialog
         mDob.setOnClickListener(v -> {
             DatePickerFragment newFragment = new DatePickerFragment();
             newFragment.show(getSupportFragmentManager(), "datePicker");
@@ -85,6 +88,7 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
     }
 
     private void setupRegisterButton() {
+        //Setting up the main button to handle user registration
         mRegister.setOnClickListener(v -> {
             try {
                 validateAndRegister();
@@ -96,6 +100,7 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
     }
 
     private void setupLoginLink() {
+        //Setting up the 'Already have an account?' link to navigate to the login page
         TextView loginLink = findViewById(R.id.login);
         if (loginLink != null) {
             loginLink.setOnClickListener(v -> {
@@ -106,6 +111,7 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
     }
 
     private void validateAndRegister() {
+        //Getting user input and performing initial validation checks
         String email = mEmail.getText().toString().trim();
         String password = mPassword.getText().toString().trim();
         String confirmPassword = mPasswordConfirm.getText().toString().trim();
@@ -123,6 +129,7 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
     }
 
     private String getSelectedGender() {
+        //Getting the text from the selected radio button for gender
         int selectedGenderId = mGenderGroup.getCheckedRadioButtonId();
         RadioButton selectedGender = findViewById(selectedGenderId);
         return selectedGender != null ? selectedGender.getText().toString() : "";
@@ -130,6 +137,7 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
 
     private boolean validateInputs(String email, String password, String confirmPassword,
                                    String name, String dob, String phone, String gender) {
+        //Checking all input fields for basic validity
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             mEmail.setError("Enter a valid email address");
             mEmail.requestFocus();
@@ -176,14 +184,12 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
 
     private void registerUser(String email, String password, String name,
                               String phone, String dob, String gender) {
+        //Calling Firebase Auth to create a new user with email and password
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Intent intent = new Intent(CustomerRegistrationActivity.this, MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
+                        //If registration is successful, save the user data to the database
                         saveUserData(email, name, phone, dob, gender);
-                        finish();
                     } else {
                         hideProgress();
                         Toast.makeText(this,
@@ -194,9 +200,11 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
     }
 
     private void saveUserData(String email, String name, String phone, String dob, String gender) {
+        //Getting the newly created user's ID
         String userId = mAuth.getCurrentUser().getUid();
         DatabaseReference userRef = mDatabase.child("Users").child("Customers").child(userId);
 
+        //Creating a map to hold the user's information
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("email", email);
         userMap.put("name", name);
@@ -205,10 +213,12 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
         userMap.put("gender", gender);
         userMap.put("timestamp", ServerValue.TIMESTAMP);
 
+        //Saving the user data to the Firebase Realtime Database
         userRef.setValue(userMap)
                 .addOnSuccessListener(aVoid -> {
                     hideProgress();
                     Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show();
+                    //Starting the main activity after successful registration
                     startActivity(new Intent(this, MainActivity.class));
                     finish();
                 })
@@ -217,8 +227,10 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
                     Toast.makeText(this,
                             "Failed to save user data: " + e.getMessage(),
                             Toast.LENGTH_LONG).show();
-                    // Delete user if data save fails
-                    mAuth.getCurrentUser().delete();
+                    //Deleting the user from Firebase Auth if saving data fails
+                    if (mAuth.getCurrentUser() != null) {
+                        mAuth.getCurrentUser().delete();
+                    }
                 });
     }
 
@@ -228,7 +240,7 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
     }
 
     private void hideProgress() {
-        if (progressDialog.isShowing()) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }
@@ -242,10 +254,12 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //Making sure the progress dialog is dismissed to prevent window leaks
         hideProgress();
     }
 
     public void setSelectedDate(String date) {
+        //This method is called from the DatePickerFragment to set the date on the EditText
         if (mDob != null) {
             mDob.setText(date);
         }
