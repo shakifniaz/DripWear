@@ -1,19 +1,18 @@
 package com.example.dripwear.Domain;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ItemsModelTest {
+class ItemsModelTest {
 
     @Test
-    public void testItemsModelGettersAndSetters() {
+    void testItemsModelGettersAndSetters() {
         ItemsModel item = new ItemsModel();
 
-        // Test setters and getters
         item.setTitle("Test Shirt");
         assertEquals("Test Shirt", item.getTitle());
 

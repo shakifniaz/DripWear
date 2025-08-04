@@ -15,6 +15,7 @@ public class ManagmentFavorites {
     private static final String FAV_LIST_KEY = "favoritesList";
 
     public ManagmentFavorites(Context context) {
+        //Initialize SharedPreferences
         sharedPreferences = context.getSharedPreferences(FAV_PREF, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
     }
@@ -23,6 +24,7 @@ public class ManagmentFavorites {
         ArrayList<ItemsModel> favoritesList = getListFav();
         boolean exists = false;
 
+        //Check if item exists
         for (ItemsModel i : favoritesList) {
             if (i.getTitle().equals(item.getTitle())) {
                 exists = true;
@@ -30,6 +32,7 @@ public class ManagmentFavorites {
             }
         }
 
+        //Add if new
         if (!exists) {
             favoritesList.add(item);
             saveFavoritesList(favoritesList);
@@ -37,23 +40,30 @@ public class ManagmentFavorites {
     }
 
     public void removeItem(ArrayList<ItemsModel> list, int position, ChangeNumberItemsListener listener) {
+        //Remove item
         list.remove(position);
+        //Save list, trigger listener
         saveFavoritesList(list);
         listener.changed();
     }
 
     private void saveFavoritesList(ArrayList<ItemsModel> list) {
+        //Convert list to JSON
         Gson gson = new Gson();
         String json = gson.toJson(list);
+        //Store JSON string
         editor.putString(FAV_LIST_KEY, json);
         editor.apply();
     }
 
     public ArrayList<ItemsModel> getListFav() {
+        //Get JSON string
         Gson gson = new Gson();
         String json = sharedPreferences.getString(FAV_LIST_KEY, null);
+        //Define list type for Gson
         Type type = new TypeToken<ArrayList<ItemsModel>>() {}.getType();
 
+        //Return list or new list
         if (json == null) {
             return new ArrayList<>();
         } else {

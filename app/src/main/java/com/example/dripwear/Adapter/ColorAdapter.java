@@ -40,6 +40,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ColorAdapter.ViewHolder holder, int position) {
+        //Handle item click to change selection
         holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -50,6 +51,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
             }
         });
 
+        //Change styling for the selected item
         if(selectedPosition==holder.getAdapterPosition()){
             Drawable unwrappedDrawable = AppCompatResources.getDrawable(context, R.drawable.color_selected);
             Glide.with(context)
@@ -57,6 +59,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
                     .apply(RequestOptions.circleCropTransform())
                     .into(holder.binding.colorLayout);
         } else {
+            //Change styling for unselected items
             Drawable unwrappedDrawable = AppCompatResources.getDrawable(context, R.drawable.color_selected);
             Drawable wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable);
             DrawableCompat.setTint(wrappedDrawable, Color.parseColor(items.get(position)));

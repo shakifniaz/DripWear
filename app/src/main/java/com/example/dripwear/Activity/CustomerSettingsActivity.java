@@ -65,40 +65,40 @@ public class CustomerSettingsActivity extends AppCompatActivity {
             return insets;
         });
 
+        //Initialize all the UI components
         mNameField = findViewById(R.id.name);
         mPhoneField = findViewById(R.id.customerPhone);
         mDobField = findViewById(R.id.dob);
         mProfileImage = findViewById(R.id.profileImage);
         mConfirm = findViewById(R.id.confirm);
         mLogout = findViewById(R.id.logoutButton);
+        //Logout button listener
         mLogout.setOnClickListener(v -> logoutUser());
 
         bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setItemSelected(R.id.profile, true);
+        //Setup bottom navigation
         setupBottomNavigation();
 
+        //Initialize Firebase authentication and database
         mAuth = FirebaseAuth.getInstance();
-
-        // CRITICAL FIX: Check if the user is logged in at the start
-        if (mAuth.getCurrentUser() == null) {
-            logoutUser();
-            return;
-        }
-
         userID = mAuth.getCurrentUser().getUid();
         mCustomerDatabase = FirebaseDatabase.getInstance().getReference()
                 .child("Users")
                 .child("Customers")
                 .child(userID);
 
+        //Get user data
         getUserInfo();
 
+        //Profile image click listener
         mProfileImage.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             startActivityForResult(intent, PICK_IMAGE_REQUEST);
         });
 
+        //Confirm button click listener
         mConfirm.setOnClickListener(v -> saveUserInformation());
     }
 
@@ -111,6 +111,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         mAuth.signOut();
         progressDialog.dismiss();
 
+        //Navigate to splash activity
         Intent intent = new Intent(CustomerSettingsActivity.this, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -118,6 +119,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
     }
 
     private void setupBottomNavigation() {
+        //Handle navigation clicks
         bottomNav.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
             @Override
             public void onItemSelected(int id) {
@@ -142,15 +144,18 @@ public class CustomerSettingsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (bottomNav != null) {
+            //Ensure profile item selected
             bottomNav.setItemSelected(R.id.profile, true);
         }
     }
 
     private void getUserInfo() {
+        //Fetch user data from Firebase
         mCustomerDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
+                    //Populate UI with data
                     if (snapshot.hasChild("name")) {
                         String name = snapshot.child("name").getValue(String.class);
                         mNameField.setText(name);
@@ -164,12 +169,14 @@ public class CustomerSettingsActivity extends AppCompatActivity {
                         mDobField.setText(dob);
                     }
                     if (snapshot.hasChild("profileImageUrl")) {
+                        //Load image with Glide
                         mProfileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
                         Glide.with(CustomerSettingsActivity.this)
                                 .load(mProfileImageUrl)
                                 .centerCrop()
                                 .into(mProfileImage);
                     } else {
+                        //Reset image URL if none exists
                         mProfileImageUrl = null;
                     }
                 }
@@ -185,12 +192,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
     }
 
     private void saveUserInformation() {
-        // FIX: Check if user session is still active
-        if (mAuth.getCurrentUser() == null) {
-            logoutUser();
-            return;
-        }
-
+        //Get data from fields
         String name = mNameField.getText().toString().trim();
         String phone = mPhoneField.getText().toString().trim();
         String dob = mDobField.getText().toString().trim();
@@ -213,19 +215,24 @@ public class CustomerSettingsActivity extends AppCompatActivity {
             return;
         }
 
+        //Check for new profile picture
         if (resultUri != null) {
+            //Upload new image
             uploadProfileImage(name, phone, dob, resultUri);
         } else {
+            //Update only text data
             updateUserData(name, phone, dob, mProfileImageUrl);
         }
     }
 
     private void uploadProfileImage(String name, String phone, String dob, Uri imageUri) {
+        //Get Firebase Storage reference
         StorageReference filePath = FirebaseStorage.getInstance().getReference()
                 .child("profile_images")
                 .child(userID);
 
         try {
+            //Compress selected image
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
@@ -238,6 +245,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
 
             UploadTask uploadTask = filePath.putBytes(data);
 
+            //Get download URL after upload
             uploadTask.continueWithTask(task -> {
                 if (!task.isSuccessful()) {
                     progressDialog.dismiss();
@@ -247,42 +255,30 @@ public class CustomerSettingsActivity extends AppCompatActivity {
             }).addOnCompleteListener(task -> {
                 progressDialog.dismiss();
                 if (task.isSuccessful()) {
+                    //Update data with new URL
                     Uri downloadUri = task.getResult();
-                    if (downloadUri != null) {
-                        updateUserData(name, phone, dob, downloadUri.toString());
-                        resultUri = null;
-                    } else {
-                        Toast.makeText(CustomerSettingsActivity.this, "Image upload successful but download URL is null.", Toast.LENGTH_LONG).show();
-                    }
+                    updateUserData(name, phone, dob, downloadUri.toString());
+                    resultUri = null; //Reset URI after upload
                 } else {
                     Toast.makeText(CustomerSettingsActivity.this,
                             "Upload failed: " + task.getException().getMessage(),
                             Toast.LENGTH_LONG).show();
                 }
             });
-        } catch (Exception e) {
+        } catch (IOException e) {
             Toast.makeText(this, "Error processing image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void updateUserData(String name, String phone, String dob, String profileImageUrl) {
+        //Create a HashMap of user info
         Map<String, Object> userInfo = new HashMap<>();
-        if (!name.isEmpty()) {
-            userInfo.put("name", name);
-        }
-        if (!phone.isEmpty()) {
-            userInfo.put("phone", phone);
-        }
-        if (!dob.isEmpty()) {
-            userInfo.put("dob", dob);
-        }
+        userInfo.put("name", name);
+        userInfo.put("phone", phone);
+        userInfo.put("dob", dob);
+
         if (profileImageUrl != null) {
             userInfo.put("profileImageUrl", profileImageUrl);
-        }
-
-        if (userInfo.isEmpty()) {
-            Toast.makeText(this, "No information to update.", Toast.LENGTH_SHORT).show();
-            return;
         }
 
         ProgressDialog progressDialog = new ProgressDialog(this);
@@ -290,8 +286,8 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        // FIX: Use updateChildren() to prevent overwriting existing data.
-        mCustomerDatabase.updateChildren(userInfo)
+        //Save data to Firebase
+        mCustomerDatabase.setValue(userInfo)
                 .addOnCompleteListener(task -> {
                     progressDialog.dismiss();
                     if (task.isSuccessful()) {
@@ -311,7 +307,9 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            //Get the selected image URI
             resultUri = data.getData();
+            //Display the image
             Glide.with(this)
                     .load(resultUri)
                     .centerCrop()

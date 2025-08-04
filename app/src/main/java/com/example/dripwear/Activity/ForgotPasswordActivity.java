@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
-    //Declaration
+    //Declaration of all variables
     Button btnReset, btnBack;
     EditText edtEmail;
     ProgressBar progressBar;
@@ -32,7 +32,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
-        //Initializaton
+        //Initializaton of views
         btnBack = findViewById(R.id.btnForgotPasswordBack);
         btnReset = findViewById(R.id.btnReset);
         edtEmail = findViewById(R.id.edtForgotPasswordEmail);
@@ -40,11 +40,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        //Reset Button Listener
+        //Set reset button listener
         btnReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 strEmail = edtEmail.getText().toString().trim();
+                //Check if email is empty
                 if (!TextUtils.isEmpty(strEmail)) {
                     ResetPassword();
                 } else {
@@ -54,7 +55,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         });
 
 
-        //Back Button Code
+        //Set back button listener
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,14 +66,17 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void ResetPassword() {
+        //Show progress bar
         progressBar.setVisibility(View.VISIBLE);
         btnReset.setVisibility(View.INVISIBLE);
 
+        //Send password reset email
         mAuth.sendPasswordResetEmail(strEmail)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         Toast.makeText(ForgotPasswordActivity.this, "Reset Password link has been sent to your registered Email", Toast.LENGTH_SHORT).show();
+                        //Go back to login screen
                         Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
                         startActivity(intent);
                         finish();
@@ -81,6 +85,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        //Show error message and hide progress bar
                         Toast.makeText(ForgotPasswordActivity.this, "Error :- " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.INVISIBLE);
                         btnReset.setVisibility(View.VISIBLE);

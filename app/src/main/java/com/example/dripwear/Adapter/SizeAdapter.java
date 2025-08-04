@@ -33,7 +33,9 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.Viewholder> {
 
     @Override
     public void onBindViewHolder(@NonNull SizeAdapter.Viewholder holder, int position) {
+        //Set size text
         holder.binding.sizeTxt.setText(items.get(position));
+        //Handle item click to change selection
         holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -44,10 +46,12 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.Viewholder> {
             }
         });
 
+        //Change styling for the selected item
         if(selectedPosition==holder.getAdapterPosition()) {
             holder.binding.sizeLayout.setBackgroundResource(R.drawable.size_selected);
             holder.binding.sizeTxt.setTextColor(context.getResources().getColor(R.color.purple));
         }else {
+            //Reset styling for unselected items
             holder.binding.sizeLayout.setBackgroundResource(R.drawable.size_unselected);
             holder.binding.sizeTxt.setTextColor(context.getResources().getColor(R.color.black));
         }

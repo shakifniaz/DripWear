@@ -21,6 +21,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     private ArrayList<BannerModel> sliderItems;
     private ViewPager2 viewPager2;
     private Context context;
+    //Runnable for infinite scrolling
     private Runnable runnable=new Runnable() {
         @Override
         public void run() {
@@ -38,12 +39,15 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     @Override
     public SliderAdapter.SliderViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context  = parent.getContext();
+        //Inflate the layout for the slider item
         return new SliderViewholder(LayoutInflater.from(context).inflate(R.layout.slider_item,parent,false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull SliderAdapter.SliderViewholder holder, int position) {
+        //Set the image for the current item
         holder.setImage(sliderItems.get(position));
+        //Load more items for infinite loop when near the end
         if(position==sliderItems.size()-2){
             viewPager2.post(runnable);
         }
@@ -58,12 +62,14 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
         private ImageView imageView;
         public SliderViewholder(@NonNull View itemView){
             super(itemView);
+            //Find the ImageView from the layout
             imageView = itemView.findViewById(R.id.imageSlide);
         }
 
         void setImage(BannerModel bannerModel){
+            //Load the image using Glide
             Glide.with(context)
-            .load(bannerModel.getUrl()).into(imageView);
+                    .load(bannerModel.getUrl()).into(imageView);
         }
 
     }

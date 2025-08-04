@@ -39,10 +39,11 @@ public class DetailActivity extends AppCompatActivity {
         binding = ActivityDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        //Initialize cart and favorites
         managmentCart = new ManagmentCart(this);
-
         managmentFavorites = new ManagmentFavorites(this);
 
+        //Fetch item details, set up UI
         getBundles();
         initPicList();
         initSize();
@@ -50,48 +51,57 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void initColor() {
+        //Setup horizontal RecyclerView for colors
         binding.recyclerColor.setAdapter(new ColorAdapter(object.getColor()));
         binding.recyclerColor.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-
     }
 
     private void initSize() {
+        //Setup horizontal RecyclerView for sizes
         binding.recyclerSize.setAdapter(new SizeAdapter(object.getSize()));
         binding.recyclerSize.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
     }
 
     private void initPicList() {
+        //Get list of pictures
         ArrayList<String> picList=new ArrayList<>(object.getPicUrl());
 
+        //Load first picture with Glide
         Glide.with(this)
                 .load(picList.get(0))
                 .into((binding.pic));
 
+        //Setup horizontal RecyclerView for pictures
         binding.picList.setAdapter(new PicListAdapter(picList,binding.pic));
         binding.picList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 
     private void getBundles() {
+        //Get the item object
         object = (ItemsModel) getIntent().getSerializableExtra("object");
+
+        //Set UI with item data
         binding.titleTxt.setText(object.getTitle());
         binding.priceTxt.setText("$"+object.getPrice());
         binding.oldPriceTxt.setText("$"+object.getOldPrice());
+        //Add strikethrough to old price
         binding.oldPriceTxt.setPaintFlags(binding.oldPriceTxt.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
-
         binding.descriptionTxt.setText(object.getDescription());
 
-        // Initialize favorites check
+        //Check if item is a favorite
         isFavorite = isItemInFavorites(object);
         updateFavoriteButton();
 
+        //Set add to cart listener
         binding.addToCartBtn.setOnClickListener(v -> {
             object.setNumberInCart(numberOrder);
             managmentCart.insertItem(object);
         });
 
+        //Set favorites button listener
         binding.favBtn.setOnClickListener(v -> {
             if (isFavorite) {
-                // Remove from favorites
+                //If favorite, remove it
                 ArrayList<ItemsModel> favorites = managmentFavorites.getListFav();
                 int position = -1;
                 for (int i = 0; i < favorites.size(); i++) {
@@ -107,16 +117,19 @@ public class DetailActivity extends AppCompatActivity {
                     });
                 }
             } else {
-                // Add to favorites
+                //If not favorite, add it
                 managmentFavorites.insertItem(object);
                 isFavorite = true;
                 updateFavoriteButton();
             }
         });
 
+        //Set back button listener
         binding.backBtn.setOnClickListener(v -> finish());
     }
+
     private boolean isItemInFavorites(ItemsModel item) {
+        //Helper to check if item is in favorites
         ArrayList<ItemsModel> favoritesList = managmentFavorites.getListFav();
         for (ItemsModel favoriteItem : favoritesList) {
             if (favoriteItem.getTitle().equals(item.getTitle())) {
@@ -125,7 +138,9 @@ public class DetailActivity extends AppCompatActivity {
         }
         return false;
     }
+
     private int getItemPosition(ItemsModel item) {
+        //Helper to find item position
         for (int i = 0; i < managmentFavorites.getListFav().size(); i++) {
             if (managmentFavorites.getListFav().get(i).getTitle().equals(item.getTitle())) {
                 return i;
@@ -135,11 +150,14 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void updateFavoriteButton() {
+        //Update favorite button icon
         if (isFavorite) {
+            //NOTE: There are conflicting calls here
             binding.favBtn.setImageResource(R.drawable.fav1);
             binding.favBtn.setImageResource(R.drawable.favv2);
             //binding.favBtn.setColorFilter(ContextCompat.getColor(this, R.color.orange));
         } else {
+            //NOTE: There are conflicting calls here.
             binding.favBtn.setImageResource(R.drawable.favv2);
             binding.favBtn.setImageResource(R.drawable.fav1);
             //binding.favBtn.setColorFilter(ContextCompat.getColor(this, R.color.black));
