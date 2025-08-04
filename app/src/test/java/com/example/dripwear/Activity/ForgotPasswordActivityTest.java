@@ -11,13 +11,14 @@ class ForgotPasswordActivityTest {
 
     @ParameterizedTest
     @CsvSource({
-            "'test@example.com', true",
-            "'user.name+tag@domain.com', true",
+            "'ishfak@gmail.com', true",
+            "'ishrak@domain.com', true",
+            "'shakif@org.edu', true",
             "'', false",
             "' ', false",
             "'invalid-email', false",
-            "'missing@domain', false",
-            "'test@.com', false",
+            "'ishfak@gmail', false",
+            "'shakif@.com', false",
             "'@domain.com', false"
     })
     void testEmailValidation(@NonNull String emailInput, boolean expectedIsValid) {
@@ -30,8 +31,9 @@ class ForgotPasswordActivityTest {
 
     @ParameterizedTest
     @CsvSource({
-            "'test@example.com', true",
-            "'valid.email@domain.co.uk', true",
+            "'nahian@gmail.com', true",
+            "'saleh.email@domain.co.uk', true",
+            "'niaz@org.edu', true",
             "'', false",
             "' ', false",
             "'invalid', false"
