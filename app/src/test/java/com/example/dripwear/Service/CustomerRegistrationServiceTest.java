@@ -58,11 +58,10 @@ class CustomerRegistrationServiceTest{
 
     @Test
     void testSuccessfulRegistrationTriggersDataSave() {
-        // Arrange: simulate FirebaseAuth returning a task
+
         when(mockAuth.createUserWithEmailAndPassword(anyString(), anyString()))
                 .thenReturn(mockAuthTask);
 
-        // Simulate successful auth task
         doAnswer(invocation -> {
             OnCompleteListener<AuthResult> listener = invocation.getArgument(0);
             when(mockAuthTask.isSuccessful()).thenReturn(true);
@@ -70,16 +69,14 @@ class CustomerRegistrationServiceTest{
             return null;
         }).when(mockAuthTask).addOnCompleteListener(any());
 
-        // Simulate user object from FirebaseAuth
         when(mockAuth.getCurrentUser()).thenReturn(mockUser);
         when(mockUser.getUid()).thenReturn("testUserId");
 
-        // Setup mock database references
         when(mockDbRef.child("Users")).thenReturn(mockDbRef);
         when(mockDbRef.child("Customers")).thenReturn(mockDbRef);
         when(mockDbRef.child("testUserId")).thenReturn(mockUsersNode);
 
-        // Simulate saving to database and triggering success
+
         when(mockUsersNode.setValue(anyMap())).thenReturn(mockSetValueTask);
 
         doAnswer(invocation -> {
@@ -88,7 +85,6 @@ class CustomerRegistrationServiceTest{
             return mockSetValueTask;
         }).when(mockSetValueTask).addOnSuccessListener(any());
 
-        // Act
         registrationService.register(
                 mockContext,
                 "email@test.com", "pass123", "Name", "012345", "01/01/2000", "Male",
@@ -96,7 +92,6 @@ class CustomerRegistrationServiceTest{
                 mockOnFailure
         );
 
-        // Assert
         verify(mockAuth).createUserWithEmailAndPassword("email@test.com", "pass123");
         verify(mockUsersNode).setValue(anyMap());
         verify(mockOnSuccess).run();
