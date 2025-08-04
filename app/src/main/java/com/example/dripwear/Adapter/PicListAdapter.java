@@ -34,10 +34,12 @@ public class PicListAdapter extends RecyclerView.Adapter<PicListAdapter.Viewhold
 
     @Override
     public void onBindViewHolder(@NonNull PicListAdapter.Viewholder holder, int position) {
+        //Load the image for the thumbnail
         Glide.with(context)
                 .load(items.get(position))
                 .into(holder.binding.pic);
 
+        //Handle the click on the thumbnail
         holder.binding.getRoot().setOnClickListener(v -> Glide.with(context)
                 .load(items.get(position))
                 .into(picMain));

@@ -25,7 +25,7 @@ public class NotificationsActivity extends AppCompatActivity {
         });
 
         ImageButton backButton = findViewById(R.id.backButton);
+        //Set back button click listener
         backButton.setOnClickListener(v -> finish());
-
     }
 }

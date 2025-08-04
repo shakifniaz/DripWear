@@ -65,18 +65,22 @@ public class CustomerSettingsActivity extends AppCompatActivity {
             return insets;
         });
 
+        //Initialize all the UI components
         mNameField = findViewById(R.id.name);
         mPhoneField = findViewById(R.id.customerPhone);
         mDobField = findViewById(R.id.dob);
         mProfileImage = findViewById(R.id.profileImage);
         mConfirm = findViewById(R.id.confirm);
         mLogout = findViewById(R.id.logoutButton);
+        //Logout button listener
         mLogout.setOnClickListener(v -> logoutUser());
 
         bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setItemSelected(R.id.profile, true);
+        //Setup bottom navigation
         setupBottomNavigation();
 
+        //Initialize Firebase authentication and database
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
         mCustomerDatabase = FirebaseDatabase.getInstance().getReference()
@@ -84,14 +88,17 @@ public class CustomerSettingsActivity extends AppCompatActivity {
                 .child("Customers")
                 .child(userID);
 
+        //Get user data
         getUserInfo();
 
+        //Profile image click listener
         mProfileImage.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             startActivityForResult(intent, PICK_IMAGE_REQUEST);
         });
 
+        //Confirm button click listener
         mConfirm.setOnClickListener(v -> saveUserInformation());
     }
 
@@ -104,6 +111,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         mAuth.signOut();
         progressDialog.dismiss();
 
+        //Navigate to splash activity
         Intent intent = new Intent(CustomerSettingsActivity.this, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -111,6 +119,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
     }
 
     private void setupBottomNavigation() {
+        //Handle navigation clicks
         bottomNav.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
             @Override
             public void onItemSelected(int id) {
@@ -135,15 +144,18 @@ public class CustomerSettingsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (bottomNav != null) {
+            //Ensure profile item selected
             bottomNav.setItemSelected(R.id.profile, true);
         }
     }
 
     private void getUserInfo() {
+        //Fetch user data from Firebase
         mCustomerDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
+                    //Populate UI with data
                     if (snapshot.hasChild("name")) {
                         String name = snapshot.child("name").getValue(String.class);
                         mNameField.setText(name);
@@ -157,13 +169,15 @@ public class CustomerSettingsActivity extends AppCompatActivity {
                         mDobField.setText(dob);
                     }
                     if (snapshot.hasChild("profileImageUrl")) {
-                        mProfileImageUrl = snapshot.child("profileImageUrl").getValue(String.class); // Store the URL
+                        //Load image with Glide
+                        mProfileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
                         Glide.with(CustomerSettingsActivity.this)
                                 .load(mProfileImageUrl)
                                 .centerCrop()
                                 .into(mProfileImage);
                     } else {
-                        mProfileImageUrl = null; // Ensure it's null if no image exists
+                        //Reset image URL if none exists
+                        mProfileImageUrl = null;
                     }
                 }
             }
@@ -178,6 +192,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
     }
 
     private void saveUserInformation() {
+        //Get data from fields
         String name = mNameField.getText().toString().trim();
         String phone = mPhoneField.getText().toString().trim();
         String dob = mDobField.getText().toString().trim();
@@ -200,19 +215,24 @@ public class CustomerSettingsActivity extends AppCompatActivity {
             return;
         }
 
+        //Check for new profile picture
         if (resultUri != null) {
+            //Upload new image
             uploadProfileImage(name, phone, dob, resultUri);
         } else {
+            //Update only text data
             updateUserData(name, phone, dob, mProfileImageUrl);
         }
     }
 
     private void uploadProfileImage(String name, String phone, String dob, Uri imageUri) {
+        //Get Firebase Storage reference
         StorageReference filePath = FirebaseStorage.getInstance().getReference()
                 .child("profile_images")
                 .child(userID);
 
         try {
+            //Compress selected image
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
@@ -225,6 +245,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
 
             UploadTask uploadTask = filePath.putBytes(data);
 
+            //Get download URL after upload
             uploadTask.continueWithTask(task -> {
                 if (!task.isSuccessful()) {
                     progressDialog.dismiss();
@@ -234,9 +255,10 @@ public class CustomerSettingsActivity extends AppCompatActivity {
             }).addOnCompleteListener(task -> {
                 progressDialog.dismiss();
                 if (task.isSuccessful()) {
+                    //Update data with new URL
                     Uri downloadUri = task.getResult();
                     updateUserData(name, phone, dob, downloadUri.toString());
-                    resultUri = null;
+                    resultUri = null; //Reset URI after upload
                 } else {
                     Toast.makeText(CustomerSettingsActivity.this,
                             "Upload failed: " + task.getException().getMessage(),
@@ -249,6 +271,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
     }
 
     private void updateUserData(String name, String phone, String dob, String profileImageUrl) {
+        //Create a HashMap of user info
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("name", name);
         userInfo.put("phone", phone);
@@ -263,6 +286,7 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
+        //Save data to Firebase
         mCustomerDatabase.setValue(userInfo)
                 .addOnCompleteListener(task -> {
                     progressDialog.dismiss();
@@ -283,7 +307,9 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            //Get the selected image URI
             resultUri = data.getData();
+            //Display the image
             Glide.with(this)
                     .load(resultUri)
                     .centerCrop()
