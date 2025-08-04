@@ -19,10 +19,10 @@ public class BannerModelTest {
     static Stream<Arguments> urlProvider() {
         return Stream.of(
                 Arguments.of("https://valid.com", "https://valid.com"),
-                Arguments.of("http://test.com",   "http://test.com"),
-                Arguments.of("",                  ""),
-                Arguments.of(null,                null),
-                Arguments.of("invalid url",       "invalid url")
+                Arguments.of("http://test.com", "http://test.com"),
+                Arguments.of("", ""),
+                Arguments.of(null, null),
+                Arguments.of("invalid url", "invalid url")
         );
     }
 }
