@@ -13,7 +13,6 @@ import com.example.dripwear.Helper.ManagmentFavorites;
 import com.example.dripwear.databinding.ViewholderFavoritesBinding;
 import java.util.ArrayList;
 import com.example.dripwear.R;
-import com.example.dripwear.databinding.ViewholderFavoritesBinding;
 
 public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Viewholder> {
     private ArrayList<ItemsModel> favoritesList;
@@ -23,6 +22,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
     public FavoritesAdapter(ArrayList<ItemsModel> favoritesList, Context context) {
         this.favoritesList = favoritesList;
         this.context = context;
+        //Initialize the favorites management helper
         this.managmentFavorites = new ManagmentFavorites(context);
     }
 
@@ -36,23 +36,28 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull Viewholder holder, int position) {
+        //Get the item for the current position
         ItemsModel item = favoritesList.get(position);
 
+        //Set the item title
         holder.binding.titleTxt.setText(item.getTitle());
 
-        // Set prices
+        //Set prices
         holder.binding.priceTxt.setText("$" + item.getPrice());
         holder.binding.priceTxt.setTextColor(context.getResources().getColor(R.color.orange));
 
+        //Set old price and add a strikethrough
         holder.binding.oldPriceTxt.setText("$" + item.getOldPrice());
         holder.binding.oldPriceTxt.setTextColor(context.getResources().getColor(R.color.darkGrey));
         holder.binding.oldPriceTxt.setPaintFlags(
                 holder.binding.oldPriceTxt.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
+        //Load the item image with Glide
         Glide.with(context)
                 .load(item.getPicUrl().get(0))
                 .into(holder.binding.pic);
 
+        //Handle the remove button click
         holder.binding.removeBtn.setOnClickListener(v -> {
             managmentFavorites.removeItem(favoritesList, position, () -> {
                 notifyDataSetChanged();

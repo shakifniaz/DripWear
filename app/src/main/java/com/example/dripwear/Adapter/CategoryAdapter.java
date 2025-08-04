@@ -37,8 +37,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull CategoryAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        //Set the category title
         holder.binding.titletxt.setText(items.get(position).getTitle());
 
+        //Handle item click to update selection
         holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -49,10 +51,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             }
         });
 
+        //Change styling for selected item
         if(selectedPosition==position){
             holder.binding.titletxt.setBackgroundResource(R.drawable.orange_bg);
             holder.binding.titletxt.setTextColor(context.getResources().getColor(R.color.white));
         }else{
+            //Reset styling for unselected items
             holder.binding.titletxt.setBackgroundResource(R.drawable.stroke_bg);
             holder.binding.titletxt.setTextColor(context.getResources().getColor(R.color.black));
         }

@@ -17,15 +17,18 @@ import org.jetbrains.annotations.NonNls;
 import java.util.ArrayList;
 
 public class MainRepository {
+    //Get a reference to the Firebase database
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
     public LiveData<ArrayList<CategoryModel>> loadCategory(){
         MutableLiveData<ArrayList<CategoryModel>> listData = new MutableLiveData<>();
+        //Reference the "Category" node
         DatabaseReference ref = firebaseDatabase.getReference("Category");
         ref.addValueEventListener(new ValueEventListener(){
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot){
                 ArrayList<CategoryModel> list = new ArrayList<>();
+                //Iterate through children and add to list
                 for(DataSnapshot childSnapshot:snapshot.getChildren()){
                     CategoryModel item = childSnapshot.getValue(CategoryModel.class);
                     if (item != null) list.add(item);
@@ -35,7 +38,7 @@ public class MainRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error){
-
+                //Handle database error
             }
 
         });
@@ -45,11 +48,13 @@ public class MainRepository {
 
     public LiveData<ArrayList<BannerModel>> loadBanner(){
         MutableLiveData<ArrayList<BannerModel>> listData = new MutableLiveData<>();
+        //Reference the "Banner" node
         DatabaseReference ref = firebaseDatabase.getReference("Banner");
         ref.addValueEventListener(new ValueEventListener(){
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot){
                 ArrayList<BannerModel> list = new ArrayList<>();
+                //Iterate through children and add to list
                 for(DataSnapshot childSnapshot:snapshot.getChildren()){
                     BannerModel item = childSnapshot.getValue(BannerModel.class);
                     if (item != null) list.add(item);
@@ -59,7 +64,7 @@ public class MainRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error){
-
+                //Handle database error
             }
 
         });
@@ -69,11 +74,13 @@ public class MainRepository {
 
     public LiveData<ArrayList<ItemsModel>> loadPopular(){
         MutableLiveData<ArrayList<ItemsModel>> listData = new MutableLiveData<>();
+        //Reference the "Items" node
         DatabaseReference ref = firebaseDatabase.getReference("Items");
         ref.addValueEventListener(new ValueEventListener(){
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot){
                 ArrayList<ItemsModel> list = new ArrayList<>();
+                //Iterate through children and add to list
                 for(DataSnapshot childSnapshot:snapshot.getChildren()){
                     ItemsModel item = childSnapshot.getValue(ItemsModel.class);
                     if (item != null) list.add(item);
@@ -83,7 +90,7 @@ public class MainRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error){
-
+                //Handle database error
             }
 
         });
