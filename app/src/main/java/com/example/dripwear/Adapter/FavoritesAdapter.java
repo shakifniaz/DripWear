@@ -23,7 +23,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         this.favoritesList = favoritesList;
         this.context = context;
         //Initialize the favorites management helper
-        this.managmentFavorites = new ManagmentFavorites(context);
+        this.managmentFavorites = ManagmentFavorites.getInstance(context);
     }
 
     @NonNull

@@ -2,28 +2,39 @@ package com.example.dripwear.Helper;
 
 import android.content.Context;
 import android.widget.Toast;
-
-
 import com.example.dripwear.Domain.ItemsModel;
-
 import java.util.ArrayList;
 
 public class ManagmentCart {
 
+    private static ManagmentCart instance;
     private Context context;
     private TinyDB tinyDB;
 
-    public ManagmentCart(Context context) {
-        this.context = context;
-        //Initialize TinyDB to handle local storage
-        this.tinyDB = new TinyDB(context);
+    // Private constructor to prevent instantiation
+    private ManagmentCart(Context context) {
+        this.context = context.getApplicationContext();
+        this.tinyDB = new TinyDB(this.context);
+    }
+
+    // Thread-safe singleton instance getter
+    public static synchronized ManagmentCart getInstance(Context context) {
+        if (instance == null) {
+            instance = new ManagmentCart(context);
+        }
+        return instance;
+    }
+
+    // Optional: Method to clear instance (for testing or logout scenarios)
+    public static void clearInstance() {
+        instance = null;
     }
 
     public void insertItem(ItemsModel item) {
         ArrayList<ItemsModel> listItem = getListCart();
         boolean existAlready = false;
         int n = 0;
-        //Check if the item already exists in the cart
+
         for (int y = 0; y < listItem.size(); y++) {
             if (listItem.get(y).getTitle().equals(item.getTitle())) {
                 existAlready = true;
@@ -31,24 +42,22 @@ public class ManagmentCart {
                 break;
             }
         }
-        //If it exists, update the quantity; otherwise, add the new item
+
         if (existAlready) {
             listItem.get(n).setNumberInCart(item.getNumberInCart());
         } else {
             listItem.add(item);
         }
-        //Save the updated cart list to TinyDB
+
         tinyDB.putListObject("CartList", listItem);
         Toast.makeText(context, "Added to your Cart", Toast.LENGTH_SHORT).show();
     }
 
     public ArrayList<ItemsModel> getListCart() {
-        //Retrieve the cart list from TinyDB
         return tinyDB.getListObject("CartList");
     }
 
     public void minusItem(ArrayList<ItemsModel> listItem, int position, ChangeNumberItemsListener changeNumberItemsListener) {
-        //Decrease the item count, removing the item if count becomes 1
         if (listItem.get(position).getNumberInCart() == 1) {
             listItem.remove(position);
         } else {
@@ -59,7 +68,6 @@ public class ManagmentCart {
     }
 
     public void plusItem(ArrayList<ItemsModel> listItem, int position, ChangeNumberItemsListener changeNumberItemsListener) {
-        //Increase the item count
         listItem.get(position).setNumberInCart(listItem.get(position).getNumberInCart() + 1);
         tinyDB.putListObject("CartList", listItem);
         changeNumberItemsListener.changed();
@@ -68,7 +76,6 @@ public class ManagmentCart {
     public Double getTotalFee() {
         ArrayList<ItemsModel> listItem2 = getListCart();
         double fee = 0;
-        //Calculate the total cost of all items in the cart
         for (int i = 0; i < listItem2.size(); i++) {
             fee = fee + (listItem2.get(i).getPrice() * listItem2.get(i).getNumberInCart());
         }

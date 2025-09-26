@@ -32,7 +32,7 @@ public class CartActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         //Initialize the cart management helper class
-        managementCart = new ManagmentCart(this);
+        managementCart = ManagmentCart.getInstance(this);
 
         bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setItemSelected(R.id.cart, true);

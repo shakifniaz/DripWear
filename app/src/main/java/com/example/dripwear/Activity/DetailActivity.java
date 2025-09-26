@@ -40,8 +40,8 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         //Initialize cart and favorites
-        managmentCart = new ManagmentCart(this);
-        managmentFavorites = new ManagmentFavorites(this);
+        managmentCart = ManagmentCart.getInstance(this);
+        managmentFavorites = ManagmentFavorites.getInstance(this);
 
         //Fetch item details, set up UI
         getBundles();
