@@ -76,8 +76,10 @@ public class ManagmentCart {
     public Double getTotalFee() {
         ArrayList<ItemsModel> listItem2 = getListCart();
         double fee = 0;
+
         for (int i = 0; i < listItem2.size(); i++) {
-            fee = fee + (listItem2.get(i).getPrice() * listItem2.get(i).getNumberInCart());
+            ItemsModel item = listItem2.get(i);
+            fee = fee + item.calculateTotalPrice(item.getNumberInCart());
         }
         return fee;
     }

@@ -43,15 +43,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.Viewholder> {
 
     @Override
     public void onBindViewHolder(@NonNull CartAdapter.Viewholder holder, int position) {
-        //Set item title
-        holder.binding.titeTxt.setText(listItemsSelected.get(position).getTitle());
-        //Set price per item
-        holder.binding.feeEachItem.setText("$ "+listItemsSelected.get(position).getPrice());
+        ItemsModel item = listItemsSelected.get(position);
+
+        holder.binding.titeTxt.setText(item.getTitle());
+        holder.binding.feeEachItem.setText("$ "+item.getPrice());
         //Calculate and set total price for this item
-        holder.binding.totalEachItem.setText("$ "+Math.round((listItemsSelected.get(position).getNumberInCart()*
-                listItemsSelected.get(position).getPrice())));
+        holder.binding.totalEachItem.setText("$ "+Math.round(item.calculateTotalPrice(item.getNumberInCart())));
         //Set the number of items
-        holder.binding.numberItemTxt.setText(String.valueOf(listItemsSelected.get(position).getNumberInCart()));
+        holder.binding.numberItemTxt.setText(String.valueOf(item.getNumberInCart()));
 
         //Load item image with Glide
         Glide.with(holder.itemView.getContext())
