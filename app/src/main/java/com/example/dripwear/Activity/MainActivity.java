@@ -20,6 +20,7 @@ import com.example.dripwear.Adapter.CategoryAdapter;
 import com.example.dripwear.Adapter.PopularAdapter;
 import com.example.dripwear.Adapter.SliderAdapter;
 import com.example.dripwear.Domain.BannerModel;
+import com.example.dripwear.Helper.FirebaseManager;
 import com.example.dripwear.R;
 import com.example.dripwear.ViewModel.MainViewModel;
 import com.example.dripwear.databinding.ActivityMainBinding;
@@ -59,14 +60,10 @@ public class MainActivity extends AppCompatActivity {
         //Check for a logged-in user
         if (mAuth.getCurrentUser() != null) {
             userID = mAuth.getCurrentUser().getUid();
-            //Set up Firebase database reference
-            mCustomerDatabase = FirebaseDatabase.getInstance().getReference()
-                    .child("Users")
-                    .child("Customers")
-                    .child(userID);
-            //Get user name and image
-            getUserName();
-            getUserProfileImage();
+
+            // 🔄 REPLACED: Using FirebaseManager instead of direct Firebase calls
+            getUserNameWithFacade();
+            getUserProfileImageWithFacade();
         }
 
         //User name click listener
@@ -90,8 +87,53 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 🔄 NEW METHOD: Get user name using FirebaseManager facade
+     */
+    private void getUserNameWithFacade() {
+        FirebaseManager.getInstance(this).getUserData(userID, new FirebaseManager.SimpleCallback() {
+            @Override
+            public void onSuccess(DataSnapshot snapshot) {
+                if (snapshot.exists() && snapshot.hasChild("name")) {
+                    String name = snapshot.child("name").getValue(String.class);
+                    userNameTextView.setText(name);
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(MainActivity.this, "Error loading name: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * 🔄 NEW METHOD: Get user profile image using FirebaseManager facade
+     */
+    private void getUserProfileImageWithFacade() {
+        FirebaseManager.getInstance(this).getUserData(userID, new FirebaseManager.SimpleCallback() {
+            @Override
+            public void onSuccess(DataSnapshot snapshot) {
+                if (snapshot.exists() && snapshot.hasChild("profileImageUrl")) {
+                    String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
+                    //Load image with Glide
+                    Glide.with(getApplicationContext())
+                            .load(profileImageUrl)
+                            .centerCrop()
+                            .into(profileImageView);
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(MainActivity.this, "Error loading image: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // 🔄 KEEP THE OLD METHODS FOR REFERENCE (you can delete them later)
     private void getUserProfileImage() {
-        //Fetch user profile image
+        //Fetch user profile image (OLD METHOD - keep for reference)
         mCustomerDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -202,27 +244,6 @@ public class MainActivity extends AppCompatActivity {
             binding.categoryView.setAdapter(new CategoryAdapter(categoryModels));
             binding.categoryView.setNestedScrollingEnabled(true);
             binding.progressBarCategory.setVisibility(View.GONE);
-        });
-    }
-
-    private void getUserName() {
-        //Fetch user name
-        mCustomerDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists() && snapshot.hasChild("name")) {
-                    String name = snapshot.child("name").getValue(String.class);
-                    userNameTextView.setText(name);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                //Show name loading error
-                Toast.makeText(MainActivity.this,
-                        "Failed to load user name: " + error.getMessage(),
-                        Toast.LENGTH_SHORT).show();
-            }
         });
     }
 }
