@@ -29,7 +29,7 @@ interface RegistrationObserver {
     void onRegistrationFailed(String error); //notifies when registration fails
 }
 
-// 🔹 SUBJECT that manages observers
+//SUBJECT that manages observers
 class RegistrationSubject {
     private static RegistrationSubject instance;
     private final List<RegistrationObserver> observers = new ArrayList<>();
@@ -82,7 +82,7 @@ public class CustomerRegistrationActivity extends AppCompatActivity implements R
             setupRegisterButton();
             setupLoginLink();
 
-            // 🟢 Register this Activity as an observer
+            //Register this Activity as an observer
             RegistrationSubject.getInstance().addObserver(this); //registers this activity to get updates
 
         } catch (Exception e) {
@@ -165,13 +165,13 @@ public class CustomerRegistrationActivity extends AppCompatActivity implements R
                 new FirebaseManager.AuthCallback() {
                     @Override
                     public void onAuthSuccess(String userId) {
-                        // 🟢 Notify observers on success
+                        //Notify observers on success
                         RegistrationSubject.getInstance().notifyRegistrationSuccess(userId); //sends success signal to observers
                     }
 
                     @Override
                     public void onAuthError(String error) {
-                        // 🟢 Notify observers on failure
+                        //Notify observers on failure
                         RegistrationSubject.getInstance().notifyRegistrationFailed(error); //sends failure signal to observers
                     }
                 });
