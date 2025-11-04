@@ -3,6 +3,7 @@ package com.example.dripwear.Helper;
 import android.content.Context;
 import android.widget.Toast;
 import com.example.dripwear.Domain.ItemsModel;
+
 import java.util.ArrayList;
 
 public class ManagmentCart {
@@ -13,14 +14,16 @@ public class ManagmentCart {
     private CartObservable cartObservable;
     private boolean isNotifying = false;
 
-    // Private constructor to prevent instantiation
+    //Memento pattern fields
+    private CartCaretaker caretaker;
+
     private ManagmentCart(Context context) {
         this.context = context.getApplicationContext();
         this.tinyDB = new TinyDB(this.context);
         this.cartObservable = CartObservable.getInstance();
+        this.caretaker = new CartCaretaker();
     }
 
-    // Thread-safe singleton instance getter
     public static synchronized ManagmentCart getInstance(Context context) {
         if (instance == null) {
             instance = new ManagmentCart(context);
@@ -28,12 +31,45 @@ public class ManagmentCart {
         return instance;
     }
 
-    // Method to clear instance
     public static void clearInstance() {
         instance = null;
     }
 
+    //Memento methods
+    public CartMemento saveCartState() {
+        ArrayList<ItemsModel> currentList = getListCart();
+        return new CartMemento(new ArrayList<>(currentList));
+    }
+
+    public void restoreCartState(CartMemento memento) {
+        if (memento != null) {
+            ArrayList<ItemsModel> restoredList = memento.getSavedState();
+            tinyDB.putListObject("CartList", restoredList);
+            notifyCartStateChanged();
+            Toast.makeText(context, "Previous cart state restored", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "No previous cart state found", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void saveCurrentStateToHistory() {
+        caretaker.saveState(saveCartState());
+    }
+
+    public void undoLastCartChange() {
+        CartMemento previousState = caretaker.restoreState();
+        restoreCartState(previousState);
+    }
+
+    public boolean canUndo() {
+        return caretaker.hasPreviousState();
+    }
+
+
+    //Other methods
     public void insertItem(ItemsModel item) {
+        saveCurrentStateToHistory(); // Save before change
+
         ArrayList<ItemsModel> listItem = getListCart();
         boolean existAlready = false;
         int n = 0;
@@ -54,7 +90,6 @@ public class ManagmentCart {
 
         tinyDB.putListObject("CartList", listItem);
 
-        // Notify observers about cart update (Observer Pattern)
         if (!isNotifying) {
             isNotifying = true;
             cartObservable.notifyItemAdded(item.getTitle(), item.getPrice());
@@ -70,6 +105,8 @@ public class ManagmentCart {
     }
 
     public void minusItem(ArrayList<ItemsModel> listItem, int position, ChangeNumberItemsListener changeNumberItemsListener) {
+        saveCurrentStateToHistory(); // Save before change
+
         ItemsModel removedItem = listItem.get(position);
         String itemTitle = removedItem.getTitle();
         boolean isRemovingCompletely = listItem.get(position).getNumberInCart() == 1;
@@ -82,7 +119,6 @@ public class ManagmentCart {
 
         tinyDB.putListObject("CartList", listItem);
 
-        // Notify observers about cart update (Observer Pattern)
         if (!isNotifying) {
             isNotifying = true;
             if (isRemovingCompletely) {
@@ -96,10 +132,11 @@ public class ManagmentCart {
     }
 
     public void plusItem(ArrayList<ItemsModel> listItem, int position, ChangeNumberItemsListener changeNumberItemsListener) {
+        saveCurrentStateToHistory(); // Save before change
+
         listItem.get(position).setNumberInCart(listItem.get(position).getNumberInCart() + 1);
         tinyDB.putListObject("CartList", listItem);
 
-        // Notify observers about cart update (Observer Pattern)
         if (!isNotifying) {
             isNotifying = true;
             cartObservable.notifyCartUpdated(getTotalItemsCount(), getTotalFee());
@@ -113,14 +150,12 @@ public class ManagmentCart {
         ArrayList<ItemsModel> listItem2 = getListCart();
         double fee = 0;
 
-        for (int i = 0; i < listItem2.size(); i++) {
-            ItemsModel item = listItem2.get(i);
-            fee = fee + item.calculateTotalPrice(item.getNumberInCart());
+        for (ItemsModel item : listItem2) {
+            fee += item.calculateTotalPrice(item.getNumberInCart());
         }
         return fee;
     }
 
-    // Helper method to get total items count
     private int getTotalItemsCount() {
         ArrayList<ItemsModel> listItem = getListCart();
         int totalCount = 0;
@@ -130,17 +165,14 @@ public class ManagmentCart {
         return totalCount;
     }
 
-    // Method to register cart observers
     public void registerCartObserver(CartObserver observer) {
         cartObservable.registerObserver(observer);
     }
 
-    // Method to unregister cart observers
     public void unregisterCartObserver(CartObserver observer) {
         cartObservable.unregisterObserver(observer);
     }
 
-    // Method to manually trigger cart update notifications
     public void notifyCartStateChanged() {
         if (!isNotifying) {
             isNotifying = true;

@@ -151,6 +151,19 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/undoBtn"
+                style="@android:style/Widget.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/grey_bg"
+                android:text="Undo Last Change"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/checkoutBtn"
                 style="@android:style/Widget.Button"
                 android:layout_width="match_parent"
