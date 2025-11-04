@@ -10,11 +10,13 @@ public class ManagmentCart {
     private static ManagmentCart instance;
     private Context context;
     private TinyDB tinyDB;
+    private CartObservable cartObservable;
 
     // Private constructor to prevent instantiation
     private ManagmentCart(Context context) {
         this.context = context.getApplicationContext();
         this.tinyDB = new TinyDB(this.context);
+        this.cartObservable = CartObservable.getInstance();
     }
 
     // Thread-safe singleton instance getter
@@ -25,7 +27,7 @@ public class ManagmentCart {
         return instance;
     }
 
-    // Optional: Method to clear instance (for testing or logout scenarios)
+    //Method to clear instance (for testing or logout scenarios)
     public static void clearInstance() {
         instance = null;
     }
@@ -50,6 +52,11 @@ public class ManagmentCart {
         }
 
         tinyDB.putListObject("CartList", listItem);
+
+        // Notify observers about cart update (Observer Pattern)
+        cartObservable.notifyItemAdded(item.getTitle(), item.getPrice());
+        cartObservable.notifyCartUpdated(getTotalItemsCount(), getTotalFee());
+
         Toast.makeText(context, "Added to your Cart", Toast.LENGTH_SHORT).show();
     }
 
@@ -58,18 +65,28 @@ public class ManagmentCart {
     }
 
     public void minusItem(ArrayList<ItemsModel> listItem, int position, ChangeNumberItemsListener changeNumberItemsListener) {
+        ItemsModel removedItem = listItem.get(position);
+        String itemTitle = removedItem.getTitle();
+
         if (listItem.get(position).getNumberInCart() == 1) {
             listItem.remove(position);
+            // Notify observers about item removal (Observer Pattern)
+            cartObservable.notifyItemRemoved(itemTitle);
         } else {
             listItem.get(position).setNumberInCart(listItem.get(position).getNumberInCart() - 1);
         }
+
         tinyDB.putListObject("CartList", listItem);
+        // Notify observers about cart update (Observer Pattern)
+        cartObservable.notifyCartUpdated(getTotalItemsCount(), getTotalFee());
         changeNumberItemsListener.changed();
     }
 
     public void plusItem(ArrayList<ItemsModel> listItem, int position, ChangeNumberItemsListener changeNumberItemsListener) {
         listItem.get(position).setNumberInCart(listItem.get(position).getNumberInCart() + 1);
         tinyDB.putListObject("CartList", listItem);
+        // Notify observers about cart update
+        cartObservable.notifyCartUpdated(getTotalItemsCount(), getTotalFee());
         changeNumberItemsListener.changed();
     }
 
@@ -82,5 +99,25 @@ public class ManagmentCart {
             fee = fee + item.calculateTotalPrice(item.getNumberInCart());
         }
         return fee;
+    }
+
+    // Helper method to get total items count
+    private int getTotalItemsCount() {
+        ArrayList<ItemsModel> listItem = getListCart();
+        int totalCount = 0;
+        for (ItemsModel item : listItem) {
+            totalCount += item.getNumberInCart();
+        }
+        return totalCount;
+    }
+
+    // Method to register cart observers
+    public void registerCartObserver(CartObserver observer) {
+        cartObservable.registerObserver(observer);
+    }
+
+    // Method to unregister cart observers
+    public void unregisterCartObserver(CartObserver observer) {
+        cartObservable.unregisterObserver(observer);
     }
 }
