@@ -30,6 +30,7 @@ public class DetailActivity extends AppCompatActivity {
     private ManagmentCart managmentCart;
     private ManagmentFavorites managmentFavorites;
     private boolean isFavorite = false;
+    private boolean isAddingToCart = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,14 +81,17 @@ public class DetailActivity extends AppCompatActivity {
         isFavorite = isItemInFavorites(object);
         updateFavoriteButton();
 
-        // 🔄 ONLY ESSENTIAL CHANGE: Apply discount strategy when adding to cart
+        // ONLY ESSENTIAL CHANGE: Apply discount strategy when adding to cart
         binding.addToCartBtn.setOnClickListener(v -> {
-            object.setNumberInCart(numberOrder);
+            if (!isAddingToCart) {
+                isAddingToCart = true;
+                object.setNumberInCart(numberOrder);
 
-            // 🔄 SIMPLE DISCOUNT STRATEGY
-            applyDiscountStrategy(object);
+                applyDiscountStrategy(object);
+                managmentCart.insertItem(object);
 
-            managmentCart.insertItem(object);
+                binding.addToCartBtn.postDelayed(() -> isAddingToCart = false, 1000);
+            }
         });
 
         binding.favBtn.setOnClickListener(v -> {
@@ -117,7 +121,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     /**
-     * 🔄 SIMPLE METHOD: Apply discount strategy based on price
+     * SIMPLE METHOD: Apply discount strategy based on price
      */
     private void applyDiscountStrategy(ItemsModel item) {
         // Rule 1: Premium items (price > $100) get 15% discount

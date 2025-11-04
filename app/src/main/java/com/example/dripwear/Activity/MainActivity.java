@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements CartObserver {
     private String userID;
     private ProductCatalog productCatalog;
     private ManagmentCart managementCart;
+    private long lastToastTime = 0;
+    private static final long TOAST_DEBOUNCE_DELAY = 1000; // 1 second
+    private String lastToastMessage = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,6 +182,21 @@ public class MainActivity extends AppCompatActivity implements CartObserver {
         }
     }
 
+    // Debounce mechanism to prevent multiple toasts
+    private void showSingleToast(String message) {
+        long currentTime = System.currentTimeMillis();
+
+        // Only show toast if enough time has passed AND it's a different message
+        if (currentTime - lastToastTime > TOAST_DEBOUNCE_DELAY || !message.equals(lastToastMessage)) {
+            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+            lastToastTime = currentTime;
+            lastToastMessage = message;
+            Log.d("ToastDebounce", "Showing toast: " + message);
+        } else {
+            Log.d("ToastDebounce", "Suppressed duplicate toast: " + message);
+        }
+    }
+
     // CartObserver implementation methods (Observer Pattern)
     @Override
     public void onCartUpdated(int itemCount, double totalAmount) {
@@ -202,10 +220,7 @@ public class MainActivity extends AppCompatActivity implements CartObserver {
         runOnUiThread(() -> {
             Log.d("CartObserver", "Item added to cart: " + itemTitle + " - $" + itemPrice);
 
-            // Show success notification
-            Toast.makeText(MainActivity.this,
-                    "✓ Added to cart: " + itemTitle,
-                    Toast.LENGTH_SHORT).show();
+            //showSingleToast("Added to cart: " + itemTitle);
         });
     }
 
@@ -214,10 +229,7 @@ public class MainActivity extends AppCompatActivity implements CartObserver {
         runOnUiThread(() -> {
             Log.d("CartObserver", "Item removed from cart: " + itemTitle);
 
-            // Show removal notification
-            Toast.makeText(MainActivity.this,
-                    "Removed: " + itemTitle,
-                    Toast.LENGTH_SHORT).show();
+            //showSingleToast("Removed: " + itemTitle);
         });
     }
 

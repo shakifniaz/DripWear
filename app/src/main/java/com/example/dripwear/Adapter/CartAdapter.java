@@ -1,7 +1,6 @@
 package com.example.dripwear.Adapter;
 
 import android.content.Context;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +13,6 @@ import com.example.dripwear.Domain.ItemsModel;
 import com.example.dripwear.Helper.ChangeNumberItemsListener;
 import com.example.dripwear.Helper.ManagmentCart;
 import com.example.dripwear.databinding.ViewholderCartBinding;
-import com.example.dripwear.databinding.ViewholderColorBinding;
-import com.example.dripwear.databinding.ViewholderPiclistBinding;
-import com.example.dripwear.databinding.ViewholderSizeBinding;
 
 import java.util.ArrayList;
 
@@ -24,6 +20,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.Viewholder> {
     ArrayList<ItemsModel> listItemsSelected;
     ChangeNumberItemsListener changeNumberItemsListener;
     private ManagmentCart managmentCart;
+    private boolean isProcessingClick = false;
 
     public CartAdapter(ArrayList<ItemsModel> listItemsSelected, Context context,
                        ChangeNumberItemsListener changeNumberItemsListener,
@@ -57,17 +54,31 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.Viewholder> {
                 .load(listItemsSelected.get(position).getPicUrl().get(0))
                 .into(holder.binding.pic);
 
-        //Handle plus button click
-        holder.binding.plsuCartBtn.setOnClickListener(v -> managmentCart.plusItem(listItemsSelected, position, () -> {
-            notifyDataSetChanged();
-            changeNumberItemsListener.changed();
-        }));
+        //Handle plus button click with click prevention
+        holder.binding.plsuCartBtn.setOnClickListener(v -> {
+            if (!isProcessingClick) {
+                isProcessingClick = true;
+                managmentCart.plusItem(listItemsSelected, position, () -> {
+                    notifyDataSetChanged();
+                    changeNumberItemsListener.changed();
+                    // Reset click prevention after a short delay
+                    holder.itemView.postDelayed(() -> isProcessingClick = false, 300);
+                });
+            }
+        });
 
-        //Handle minus button click
-        holder.binding.minusCartBtn.setOnClickListener(v -> managmentCart.minusItem(listItemsSelected, position, () -> {
-            notifyDataSetChanged();
-            changeNumberItemsListener.changed();
-        }));
+        //Handle minus button click with click prevention
+        holder.binding.minusCartBtn.setOnClickListener(v -> {
+            if (!isProcessingClick) {
+                isProcessingClick = true;
+                managmentCart.minusItem(listItemsSelected, position, () -> {
+                    notifyDataSetChanged();
+                    changeNumberItemsListener.changed();
+                    // Reset click prevention after a short delay
+                    holder.itemView.postDelayed(() -> isProcessingClick = false, 300);
+                });
+            }
+        });
     }
 
     @Override
