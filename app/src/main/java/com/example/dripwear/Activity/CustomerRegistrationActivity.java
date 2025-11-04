@@ -16,48 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dripwear.Helper.FirebaseManager;
 import com.example.dripwear.Helper.RegistrationObserver;
+import com.example.dripwear.Helper.RegistrationSubject;
 import com.example.dripwear.R;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
-
-
-//SUBJECT that manages observers
-class RegistrationSubject {
-    private static RegistrationSubject instance;
-    private final List<RegistrationObserver> observers = new ArrayList<>();
-
-    private RegistrationSubject() {} //keeps constructor private for singleton
-
-    public static RegistrationSubject getInstance() { //returns singleton instance
-        if (instance == null) {
-            instance = new RegistrationSubject();
-        }
-        return instance;
-    }
-
-    public void addObserver(RegistrationObserver observer) { //adds an observer to the list
-        if (!observers.contains(observer)) observers.add(observer);
-    }
-
-    public void removeObserver(RegistrationObserver observer) { //removes an observer from the list
-        observers.remove(observer);
-    }
-
-    public void notifyRegistrationStarted() { //tells all observers registration started
-        for (RegistrationObserver o : observers) o.onRegistrationStarted();
-    }
-
-    public void notifyRegistrationSuccess(String userId) { //tells all observers registration succeeded
-        for (RegistrationObserver o : observers) o.onRegistrationSuccess(userId);
-    }
-
-    public void notifyRegistrationFailed(String error) { //tells all observers registration failed
-        for (RegistrationObserver o : observers) o.onRegistrationFailed(error);
-    }
-}
 
 public class CustomerRegistrationActivity extends AppCompatActivity implements RegistrationObserver {
 
