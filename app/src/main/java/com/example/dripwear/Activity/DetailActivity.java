@@ -5,8 +5,6 @@ import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -17,7 +15,6 @@ import com.example.dripwear.Domain.ItemsModel;
 import com.example.dripwear.Helper.ManagmentCart;
 import com.example.dripwear.Helper.ManagmentFavorites;
 import com.example.dripwear.R;
-import com.example.dripwear.Strategy.DiscountPricing;
 import com.example.dripwear.Strategy.PricingStrategy;
 import com.example.dripwear.Strategy.PricingStrategyFactory; //Factory
 import com.example.dripwear.databinding.ActivityDetailBinding;
@@ -135,9 +132,9 @@ public class DetailActivity extends AppCompatActivity {
 
     private void updateFavoriteButton() {
         if (isFavorite) {
-            binding.favBtn.setImageResource(R.drawable.fav1);
-        } else {
             binding.favBtn.setImageResource(R.drawable.favv2);
+        } else {
+            binding.favBtn.setImageResource(R.drawable.fav1);
         }
     }
 }
