@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,8 +17,10 @@ import com.example.dripwear.Domain.ItemsModel;
 import com.example.dripwear.Helper.ManagmentCart;
 import com.example.dripwear.Helper.ManagmentFavorites;
 import com.example.dripwear.R;
-import com.example.dripwear.databinding.ActivityDetailBinding;
 import com.example.dripwear.Strategy.DiscountPricing;
+import com.example.dripwear.Strategy.PricingStrategy;
+import com.example.dripwear.Strategy.PricingStrategyFactory; //Factory
+import com.example.dripwear.databinding.ActivityDetailBinding;
 
 import java.util.ArrayList;
 
@@ -81,13 +82,15 @@ public class DetailActivity extends AppCompatActivity {
         isFavorite = isItemInFavorites(object);
         updateFavoriteButton();
 
-        // ONLY ESSENTIAL CHANGE: Apply discount strategy when adding to cart
         binding.addToCartBtn.setOnClickListener(v -> {
             if (!isAddingToCart) {
                 isAddingToCart = true;
                 object.setNumberInCart(numberOrder);
 
-                applyDiscountStrategy(object);
+                //Factory Pattern: Client calls Factory to get Product
+                PricingStrategy strategy = PricingStrategyFactory.getStrategy(object); //Factory
+                object.setPricingStrategy(strategy); //Product set on Client
+
                 managmentCart.insertItem(object);
 
                 binding.addToCartBtn.postDelayed(() -> isAddingToCart = false, 1000);
@@ -118,30 +121,6 @@ public class DetailActivity extends AppCompatActivity {
         });
 
         binding.backBtn.setOnClickListener(v -> finish());
-    }
-
-    /**
-     * SIMPLE METHOD: Apply discount strategy based on price
-     */
-    private void applyDiscountStrategy(ItemsModel item) {
-        // Rule 1: Premium items (price > $100) get 15% discount
-        if (item.getPrice() > 100) {
-            item.setPricingStrategy(new DiscountPricing(0.15));
-        }
-        // Rule 2: Mid-range items ($50-$100) get 10% discount
-        else if (item.getPrice() > 50) {
-            item.setPricingStrategy(new DiscountPricing(0.10));
-        }
-        // Rule 3: Sale items get 20% discount
-        else if (item.getTitle().toLowerCase().contains("sale") ||
-                item.getTitle().toLowerCase().contains("clearance")) {
-            item.setPricingStrategy(new DiscountPricing(0.20));
-        }
-        // Rule 4: High-rated items get 5% discount
-        else if (item.getRating() >= 4.5) {
-            item.setPricingStrategy(new DiscountPricing(0.05));
-        }
-        // Otherwise, uses RegularPricing (default)
     }
 
     private boolean isItemInFavorites(ItemsModel item) {
