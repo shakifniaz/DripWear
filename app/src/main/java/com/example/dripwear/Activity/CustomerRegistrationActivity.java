@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dripwear.Helper.FirebaseManager;
+import com.example.dripwear.Helper.RegistrationObserver;
 import com.example.dripwear.R;
 
 import java.util.HashMap;
@@ -22,12 +23,6 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
 
-
-interface RegistrationObserver {
-    void onRegistrationStarted(); //notifies when registration starts
-    void onRegistrationSuccess(String userId); //notifies when registration succeeds
-    void onRegistrationFailed(String error); //notifies when registration fails
-}
 
 //SUBJECT that manages observers
 class RegistrationSubject {
