@@ -19,8 +19,52 @@ import com.example.dripwear.R;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-public class CustomerRegistrationActivity extends AppCompatActivity {
+
+interface RegistrationObserver {
+    void onRegistrationStarted(); //notifies when registration starts
+    void onRegistrationSuccess(String userId); //notifies when registration succeeds
+    void onRegistrationFailed(String error); //notifies when registration fails
+}
+
+// 🔹 SUBJECT that manages observers
+class RegistrationSubject {
+    private static RegistrationSubject instance;
+    private final List<RegistrationObserver> observers = new ArrayList<>();
+
+    private RegistrationSubject() {} //keeps constructor private for singleton
+
+    public static RegistrationSubject getInstance() { //returns singleton instance
+        if (instance == null) {
+            instance = new RegistrationSubject();
+        }
+        return instance;
+    }
+
+    public void addObserver(RegistrationObserver observer) { //adds an observer to the list
+        if (!observers.contains(observer)) observers.add(observer);
+    }
+
+    public void removeObserver(RegistrationObserver observer) { //removes an observer from the list
+        observers.remove(observer);
+    }
+
+    public void notifyRegistrationStarted() { //tells all observers registration started
+        for (RegistrationObserver o : observers) o.onRegistrationStarted();
+    }
+
+    public void notifyRegistrationSuccess(String userId) { //tells all observers registration succeeded
+        for (RegistrationObserver o : observers) o.onRegistrationSuccess(userId);
+    }
+
+    public void notifyRegistrationFailed(String error) { //tells all observers registration failed
+        for (RegistrationObserver o : observers) o.onRegistrationFailed(error);
+    }
+}
+
+public class CustomerRegistrationActivity extends AppCompatActivity implements RegistrationObserver {
 
     private EditText mEmail, mPassword, mPasswordConfirm, mName, mDob, mPhone;
     private RadioGroup mGenderGroup;
@@ -37,6 +81,10 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
             setupDatePicker();
             setupRegisterButton();
             setupLoginLink();
+
+            // 🟢 Register this Activity as an observer
+            RegistrationSubject.getInstance().addObserver(this); //registers this activity to get updates
+
         } catch (Exception e) {
             handleInitializationError(e);
         }
@@ -103,10 +151,30 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
             return;
         }
 
-        showProgress("Registering...");
+        //Notify observers that registration started
+        RegistrationSubject.getInstance().notifyRegistrationStarted(); //sends start signal to observers
 
-        // 🔄 USING FIREBASE MANAGER FACADE
-        registerUserWithFacade(email, password, name, phone, dob, gender);
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("email", email);
+        userData.put("name", name);
+        userData.put("phone", phone);
+        userData.put("dob", dob);
+        userData.put("gender", gender);
+
+        FirebaseManager.getInstance(this).registerUser(email, password, userData,
+                new FirebaseManager.AuthCallback() {
+                    @Override
+                    public void onAuthSuccess(String userId) {
+                        // 🟢 Notify observers on success
+                        RegistrationSubject.getInstance().notifyRegistrationSuccess(userId); //sends success signal to observers
+                    }
+
+                    @Override
+                    public void onAuthError(String error) {
+                        // 🟢 Notify observers on failure
+                        RegistrationSubject.getInstance().notifyRegistrationFailed(error); //sends failure signal to observers
+                    }
+                });
     }
 
     private String getSelectedGender() {
@@ -161,37 +229,24 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
         return true;
     }
 
-    /**
-     * 🔄 NEW METHOD: Register user using FirebaseManager facade
-     */
-    private void registerUserWithFacade(String email, String password, String name,
-                                        String phone, String dob, String gender) {
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("email", email);
-        userData.put("name", name);
-        userData.put("phone", phone);
-        userData.put("dob", dob);
-        userData.put("gender", gender);
+    // 🟢 OBSERVER IMPLEMENTATION METHODS
+    @Override
+    public void onRegistrationStarted() { //shows loading dialog when registration starts
+        showProgress("Registering...");
+    }
 
-        FirebaseManager.getInstance(this).registerUser(email, password, userData,
-                new FirebaseManager.AuthCallback() {
-                    @Override
-                    public void onAuthSuccess(String userId) {
-                        hideProgress();
-                        Toast.makeText(CustomerRegistrationActivity.this,
-                                "Registration successful", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(CustomerRegistrationActivity.this, MainActivity.class));
-                        finish();
-                    }
+    @Override
+    public void onRegistrationSuccess(String userId) { //handles UI when registration succeeds
+        hideProgress();
+        Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
+    }
 
-                    @Override
-                    public void onAuthError(String error) {
-                        hideProgress();
-                        Toast.makeText(CustomerRegistrationActivity.this,
-                                "Registration failed: " + error,
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
+    @Override
+    public void onRegistrationFailed(String error) { //handles UI when registration fails
+        hideProgress();
+        Toast.makeText(this, "Registration failed: " + error, Toast.LENGTH_LONG).show();
     }
 
     private void showProgress(String message) {
@@ -214,6 +269,7 @@ public class CustomerRegistrationActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        RegistrationSubject.getInstance().removeObserver(this); //unregisters observer when destroyed
         hideProgress();
     }
 
