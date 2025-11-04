@@ -2,6 +2,7 @@ package com.example.dripwear.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,7 +21,13 @@ import com.example.dripwear.Adapter.CategoryAdapter;
 import com.example.dripwear.Adapter.PopularAdapter;
 import com.example.dripwear.Adapter.SliderAdapter;
 import com.example.dripwear.Domain.BannerModel;
+import com.example.dripwear.Domain.ItemsModel;
+import com.example.dripwear.Domain.OrderComposite;
+import com.example.dripwear.Domain.OrderItem;
+import com.example.dripwear.Domain.ProductCatalog;
+import com.example.dripwear.Helper.CartObserver;
 import com.example.dripwear.Helper.FirebaseManager;
+import com.example.dripwear.Helper.ManagmentCart;
 import com.example.dripwear.R;
 import com.example.dripwear.ViewModel.MainViewModel;
 import com.example.dripwear.databinding.ActivityMainBinding;
@@ -34,7 +41,7 @@ import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CartObserver {
 
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
@@ -43,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference mCustomerDatabase;
     private String userID;
+    private ProductCatalog productCatalog;
+    private ManagmentCart managementCart;
+    private long lastToastTime = 0;
+    private static final long TOAST_DEBOUNCE_DELAY = 1000; // 1 second
+    private String lastToastMessage = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +69,15 @@ public class MainActivity extends AppCompatActivity {
         profileImageView = findViewById(R.id.imageView2);
         mAuth = FirebaseAuth.getInstance();
 
+        // Initialize cart management and register observer (Observer Pattern)
+        managementCart = ManagmentCart.getInstance(this);
+        managementCart.registerCartObserver(this);
+
         //Check for a logged-in user
         if (mAuth.getCurrentUser() != null) {
             userID = mAuth.getCurrentUser().getUid();
 
-            // 🔄 REPLACED: Using FirebaseManager instead of direct Firebase calls
+            // Using FirebaseManager instead of direct Firebase calls
             getUserNameWithFacade();
             getUserProfileImageWithFacade();
         }
@@ -85,10 +101,140 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, NotificationsActivity.class);
             startActivity(intent);
         });
+
+        // Initialize product catalog with actual app data (Iterator Pattern)
+        initializeProductCatalogWithRealData();
+    }
+
+    // Initialize product catalog with actual app products (Iterator Pattern)
+    private void initializeProductCatalogWithRealData() {
+        productCatalog = new ProductCatalog();
+
+        // Use the actual products from your ViewModel instead of demo data
+        viewModel.loadPopular().observeForever(itemsModels -> {
+            if (itemsModels != null && !itemsModels.isEmpty()) {
+                // Add all actual products to the catalog
+                for (ItemsModel product : itemsModels) {
+                    productCatalog.addProduct(product);
+                }
+
+                // Demonstrate iterator pattern with real products
+                Log.d("IteratorPattern", "=== Actual Products in Catalog ===");
+                Log.d("IteratorPattern", "Total products loaded: " + productCatalog.getProductCount());
+
+                // Iterate through all actual products
+                for (ItemsModel product : productCatalog) {
+                    Log.d("IteratorPattern", "Product: " + product.getTitle() +
+                            " - $" + product.getPrice() + " - Rating: " + product.getRating());
+                }
+
+                // Find high-rated products from actual data
+                Log.d("IteratorPattern", "=== High-Rated Actual Products (4.0+ rating) ===");
+                var highRatedIterator = productCatalog.getHighRatedProductsIterator(4.0);
+                int highRatedCount = 0;
+                while (highRatedIterator.hasNext()) {
+                    ItemsModel product = highRatedIterator.next();
+                    highRatedCount++;
+                    Log.d("IteratorPattern", "Highly Rated: " + product.getTitle() +
+                            " - Rating: " + product.getRating());
+                }
+                Log.d("IteratorPattern", "Found " + highRatedCount + " high-rated products");
+
+                // Find discounted products
+                Log.d("IteratorPattern", "=== Products with Special Pricing ===");
+                var discountedIterator = productCatalog.getDiscountedProductsIterator();
+                int discountedCount = 0;
+                while (discountedIterator.hasNext()) {
+                    ItemsModel product = discountedIterator.next();
+                    discountedCount++;
+                    Log.d("IteratorPattern", "Discounted: " + product.getTitle() +
+                            " - Strategy: " + product.getPricingStrategyName());
+                }
+                Log.d("IteratorPattern", "Found " + discountedCount + " products with special pricing");
+            }
+        });
+    }
+
+    // Create sample order using actual cart items (Composite Pattern)
+    private void createSampleOrderFromCart() {
+        ArrayList<ItemsModel> cartItems = managementCart.getListCart();
+
+        if (!cartItems.isEmpty()) {
+            // Create main order composite from actual cart items
+            OrderComposite mainOrder = new OrderComposite("Current Cart Order");
+
+            // Add actual cart items to the order
+            for (ItemsModel cartItem : cartItems) {
+                OrderItem orderItem = new OrderItem(cartItem, cartItem.getNumberInCart());
+                mainOrder.addComponent(orderItem);
+            }
+
+            // Display order details using composite pattern
+            Log.d("CompositePattern", "=== Actual Cart Order Details ===");
+            mainOrder.displayOrderDetails();
+
+            // Demonstrate composite properties with real data
+            Log.d("CompositePattern", "Total Items in Cart: " + mainOrder.getTotalItemsCount());
+            Log.d("CompositePattern", "Cart Total Price: $" + mainOrder.getPrice());
+
+        } else {
+            Log.d("CompositePattern", "Cart is empty - no order to display");
+        }
+    }
+
+    // Debounce mechanism to prevent multiple toasts
+    private void showSingleToast(String message) {
+        long currentTime = System.currentTimeMillis();
+
+        // Only show toast if enough time has passed AND it's a different message
+        if (currentTime - lastToastTime > TOAST_DEBOUNCE_DELAY || !message.equals(lastToastMessage)) {
+            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+            lastToastTime = currentTime;
+            lastToastMessage = message;
+            Log.d("ToastDebounce", "Showing toast: " + message);
+        } else {
+            Log.d("ToastDebounce", "Suppressed duplicate toast: " + message);
+        }
+    }
+
+    // CartObserver implementation methods (Observer Pattern)
+    @Override
+    public void onCartUpdated(int itemCount, double totalAmount) {
+        // Update UI or perform actions when cart changes
+        runOnUiThread(() -> {
+            Log.d("CartObserver", "Cart updated: " + itemCount + " items, Total: $" + totalAmount);
+
+            // Update order view when cart changes (Composite Pattern)
+            createSampleOrderFromCart();
+
+            // Show subtle notification for cart updates
+            if (itemCount > 0) {
+                // You could update a cart badge here
+                // updateCartBadge(itemCount);
+            }
+        });
+    }
+
+    @Override
+    public void onItemAdded(String itemTitle, double itemPrice) {
+        runOnUiThread(() -> {
+            Log.d("CartObserver", "Item added to cart: " + itemTitle + " - $" + itemPrice);
+
+            //showSingleToast("Added to cart: " + itemTitle);
+        });
+    }
+
+    @Override
+    public void onItemRemoved(String itemTitle) {
+        runOnUiThread(() -> {
+            Log.d("CartObserver", "Item removed from cart: " + itemTitle);
+
+            //showSingleToast("Removed: " + itemTitle);
+        });
     }
 
     /**
-     * 🔄 NEW METHOD: Get user name using FirebaseManager facade
+     * NEW METHOD: Get user name using FirebaseManager facade
      */
     private void getUserNameWithFacade() {
         FirebaseManager.getInstance(this).getUserData(userID, new FirebaseManager.SimpleCallback() {
@@ -108,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 🔄 NEW METHOD: Get user profile image using FirebaseManager facade
+     * NEW METHOD: Get user profile image using FirebaseManager facade
      */
     private void getUserProfileImageWithFacade() {
         FirebaseManager.getInstance(this).getUserData(userID, new FirebaseManager.SimpleCallback() {
@@ -131,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // 🔄 KEEP THE OLD METHODS FOR REFERENCE (you can delete them later)
+    // KEEP THE OLD METHODS FOR REFERENCE
     private void getUserProfileImage() {
         //Fetch user profile image (OLD METHOD - keep for reference)
         mCustomerDatabase.addValueEventListener(new ValueEventListener() {
@@ -177,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Floating cart button click
+        // Floating cart button click
         binding.cartBtn.setOnClickListener(v -> {
             startActivity(new Intent(MainActivity.this, CartActivity.class));
             binding.bottomNavigation.setItemSelected(R.id.cart, true);
@@ -189,6 +335,18 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         //Ensure home is selected
         binding.bottomNavigation.setItemSelected(R.id.home, true);
+
+        //Update order view when activity resumes (Composite Pattern)
+        createSampleOrderFromCart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Unregister observer to prevent memory leaks (Observer Pattern)
+        if (managementCart != null) {
+            managementCart.unregisterCartObserver(this);
+        }
     }
 
     private void initPopular() {
@@ -245,5 +403,42 @@ public class MainActivity extends AppCompatActivity {
             binding.categoryView.setNestedScrollingEnabled(true);
             binding.progressBarCategory.setVisibility(View.GONE);
         });
+    }
+
+    // Utility method to get the product catalog (Iterator Pattern)
+    public ProductCatalog getProductCatalog() {
+        return productCatalog;
+    }
+
+    // Analyze current cart using (Iterator Pattern)
+    private void analyzeCartWithIterator() {
+        ArrayList<ItemsModel> cartItems = managementCart.getListCart();
+
+        if (!cartItems.isEmpty()) {
+            ProductCatalog cartCatalog = new ProductCatalog();
+
+            // Add cart items to catalog for iterator operations
+            for (ItemsModel item : cartItems) {
+                cartCatalog.addProduct(item);
+            }
+
+            // Using iterator to analyze actual cart contents
+            Log.d("CartAnalysis", "=== Actual Cart Contents Analysis ===");
+            int totalItems = 0;
+            double totalValue = 0;
+
+            for (ItemsModel item : cartCatalog) {
+                totalItems += item.getNumberInCart();
+                double itemTotal = item.calculateTotalPrice(item.getNumberInCart());
+                totalValue += itemTotal;
+                Log.d("CartAnalysis", item.getTitle() + " x" + item.getNumberInCart() +
+                        " = $" + itemTotal + " (Strategy: " + item.getPricingStrategyName() + ")");
+            }
+
+            Log.d("CartAnalysis", "Total Items: " + totalItems + ", Total Value: $" + totalValue);
+            Log.d("CartAnalysis", "Average item value: $" + (totalValue / totalItems));
+        } else {
+            Log.d("CartAnalysis", "Cart is empty - nothing to analyze");
+        }
     }
 }
