@@ -15,24 +15,19 @@ public class ManagmentFavorites {
     private static final String FAV_PREF = "FavoritesPref";
     private static final String FAV_LIST_KEY = "favoritesList";
 
-    // Private constructor to prevent instantiation
-    private ManagmentFavorites(Context context) {
-        Context appContext = context.getApplicationContext();
-        sharedPreferences = appContext.getSharedPreferences(FAV_PREF, Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-    }
+    private ManagmentFavorites() {}
 
-    // Thread-safe singleton instance getter
+    //Singleton method
     public static synchronized ManagmentFavorites getInstance(Context context) {
         if (instance == null) {
-            instance = new ManagmentFavorites(context);
+            instance = new ManagmentFavorites();
+            instance.initialize(context.getApplicationContext());
         }
         return instance;
     }
 
-    // Optional: Method to clear instance
-    public static void clearInstance() {
-        instance = null;
+    private void initialize(Context appContext) {
+        sharedPreferences = appContext.getSharedPreferences(FAV_PREF, Context.MODE_PRIVATE);
     }
 
     public void insertItem(ItemsModel item) {
@@ -61,6 +56,7 @@ public class ManagmentFavorites {
     private void saveFavoritesList(ArrayList<ItemsModel> list) {
         Gson gson = new Gson();
         String json = gson.toJson(list);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(FAV_LIST_KEY, json);
         editor.apply();
     }

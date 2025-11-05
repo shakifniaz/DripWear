@@ -17,22 +17,22 @@ public class ManagmentCart {
     //Memento pattern fields
     private CartCaretaker caretaker;
 
-    private ManagmentCart(Context context) {
-        this.context = context.getApplicationContext();
-        this.tinyDB = new TinyDB(this.context);
-        this.cartObservable = CartObservable.getInstance();
-        this.caretaker = new CartCaretaker();
-    }
+    private ManagmentCart() {}
 
+    //Singleton method
     public static synchronized ManagmentCart getInstance(Context context) {
         if (instance == null) {
-            instance = new ManagmentCart(context);
+            instance = new ManagmentCart();
+            instance.initialize(context.getApplicationContext());
         }
         return instance;
     }
 
-    public static void clearInstance() {
-        instance = null;
+    private void initialize(Context appContext) {
+        this.context = appContext;
+        this.tinyDB = new TinyDB(this.context);
+        this.cartObservable = CartObservable.getInstance();
+        this.caretaker = new CartCaretaker();
     }
 
     //Memento methods
