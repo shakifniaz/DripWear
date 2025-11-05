@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.dripwear.Adapter.CartAdapter;
-import com.example.dripwear.Helper.ManagmentCart;
+import com.example.dripwear.Helper.ManagementCart;
 import com.example.dripwear.R;
 import com.example.dripwear.databinding.ActivityCartBinding;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
@@ -17,7 +17,7 @@ import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 public class CartActivity extends AppCompatActivity {
     private ActivityCartBinding binding;
     private double tax;
-    private ManagmentCart managementCart;
+    private ManagementCart managementCart;
     private ChipNavigationBar bottomNav;
 
     @Override
@@ -27,7 +27,7 @@ public class CartActivity extends AppCompatActivity {
         binding = ActivityCartBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        managementCart = ManagmentCart.getInstance(this);
+        managementCart = ManagementCart.getInstance(this);
         bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setItemSelected(R.id.cart, true);
 

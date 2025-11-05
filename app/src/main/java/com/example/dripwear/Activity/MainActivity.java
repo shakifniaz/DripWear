@@ -27,7 +27,7 @@ import com.example.dripwear.Domain.OrderItem;
 import com.example.dripwear.Domain.ProductCatalog;
 import com.example.dripwear.Helper.CartObserver;
 import com.example.dripwear.Helper.FirebaseManager;
-import com.example.dripwear.Helper.ManagmentCart;
+import com.example.dripwear.Helper.ManagementCart;
 import com.example.dripwear.R;
 import com.example.dripwear.ViewModel.MainViewModel;
 import com.example.dripwear.databinding.ActivityMainBinding;
@@ -35,7 +35,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements CartObserver {
     private DatabaseReference mCustomerDatabase;
     private String userID;
     private ProductCatalog productCatalog;
-    private ManagmentCart managementCart;
+    private ManagementCart managementCart;
     private long lastToastTime = 0;
     private static final long TOAST_DEBOUNCE_DELAY = 1000; // 1 second
     private String lastToastMessage = "";
@@ -70,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements CartObserver {
         mAuth = FirebaseAuth.getInstance();
 
         // Initialize cart management and register observer (Observer Pattern)
-        managementCart = ManagmentCart.getInstance(this);
+        managementCart = ManagementCart.getInstance(this);
         managementCart.registerCartObserver(this);
 
         //Check for a logged-in user

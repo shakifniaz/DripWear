@@ -2,7 +2,6 @@ package com.example.dripwear.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -11,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.dripwear.Domain.ItemsModel;
 import com.example.dripwear.Helper.ChangeNumberItemsListener;
-import com.example.dripwear.Helper.ManagmentCart;
+import com.example.dripwear.Helper.ManagementCart;
 import com.example.dripwear.databinding.ViewholderCartBinding;
 
 import java.util.ArrayList;
@@ -19,15 +18,15 @@ import java.util.ArrayList;
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.Viewholder> {
     ArrayList<ItemsModel> listItemsSelected;
     ChangeNumberItemsListener changeNumberItemsListener;
-    private ManagmentCart managmentCart;
+    private ManagementCart managementCart;
     private boolean isProcessingClick = false;
 
     public CartAdapter(ArrayList<ItemsModel> listItemsSelected, Context context,
                        ChangeNumberItemsListener changeNumberItemsListener,
-                       ManagmentCart managmentCart) {
+                       ManagementCart managementCart) {
         this.listItemsSelected = listItemsSelected;
         this.changeNumberItemsListener = changeNumberItemsListener;
-        this.managmentCart = managmentCart;
+        this.managementCart = managementCart;
     }
 
     @NonNull
@@ -58,7 +57,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.Viewholder> {
         holder.binding.plsuCartBtn.setOnClickListener(v -> {
             if (!isProcessingClick) {
                 isProcessingClick = true;
-                managmentCart.plusItem(listItemsSelected, position, () -> {
+                managementCart.plusItem(listItemsSelected, position, () -> {
                     notifyDataSetChanged();
                     changeNumberItemsListener.changed();
                     // Reset click prevention after a short delay
@@ -71,7 +70,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.Viewholder> {
         holder.binding.minusCartBtn.setOnClickListener(v -> {
             if (!isProcessingClick) {
                 isProcessingClick = true;
-                managmentCart.minusItem(listItemsSelected, position, () -> {
+                managementCart.minusItem(listItemsSelected, position, () -> {
                     notifyDataSetChanged();
                     changeNumberItemsListener.changed();
                     // Reset click prevention after a short delay

@@ -12,7 +12,7 @@ import com.example.dripwear.Adapter.ColorAdapter;
 import com.example.dripwear.Adapter.PicListAdapter;
 import com.example.dripwear.Adapter.SizeAdapter;
 import com.example.dripwear.Domain.ItemsModel;
-import com.example.dripwear.Helper.ManagmentCart;
+import com.example.dripwear.Helper.ManagementCart;
 import com.example.dripwear.Helper.ManagmentFavorites;
 import com.example.dripwear.R;
 import com.example.dripwear.Strategy.PricingStrategy;
@@ -25,7 +25,7 @@ public class DetailActivity extends AppCompatActivity {
     private ActivityDetailBinding binding;
     private ItemsModel object;
     private int numberOrder = 1;
-    private ManagmentCart managmentCart;
+    private ManagementCart managementCart;
     private ManagmentFavorites managmentFavorites;
     private boolean isFavorite = false;
     private boolean isAddingToCart = false;
@@ -37,7 +37,7 @@ public class DetailActivity extends AppCompatActivity {
         binding = ActivityDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        managmentCart = ManagmentCart.getInstance(this);
+        managementCart = ManagementCart.getInstance(this);
         managmentFavorites = ManagmentFavorites.getInstance(this);
 
         getBundles();
@@ -88,7 +88,7 @@ public class DetailActivity extends AppCompatActivity {
                 PricingStrategy strategy = PricingStrategyFactory.getStrategy(object); //Factory
                 object.setPricingStrategy(strategy); //Product set on Client
 
-                managmentCart.insertItem(object);
+                managementCart.insertItem(object);
 
                 binding.addToCartBtn.postDelayed(() -> isAddingToCart = false, 1000);
             }

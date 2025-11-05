@@ -6,9 +6,9 @@ import com.example.dripwear.Domain.ItemsModel;
 
 import java.util.ArrayList;
 
-public class ManagmentCart {
+public class ManagementCart {
 
-    private static ManagmentCart instance;
+    private static ManagementCart instance;
     private Context context;
     private TinyDB tinyDB;
     private CartObservable cartObservable;
@@ -17,12 +17,12 @@ public class ManagmentCart {
     //Memento pattern fields
     private CartCaretaker caretaker;
 
-    private ManagmentCart() {}
+    private ManagementCart() {}
 
     //Singleton method
-    public static synchronized ManagmentCart getInstance(Context context) {
+    public static synchronized ManagementCart getInstance(Context context) {
         if (instance == null) {
-            instance = new ManagmentCart();
+            instance = new ManagementCart();
             instance.initialize(context.getApplicationContext());
         }
         return instance;
