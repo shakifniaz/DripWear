@@ -90,6 +90,7 @@ public class ManagmentCart {
 
         tinyDB.putListObject("CartList", listItem);
 
+        // Notify observers about cart update (Observer Pattern)
         if (!isNotifying) {
             isNotifying = true;
             cartObservable.notifyItemAdded(item.getTitle(), item.getPrice());
@@ -119,6 +120,7 @@ public class ManagmentCart {
 
         tinyDB.putListObject("CartList", listItem);
 
+        // Notify observers about cart update (Observer Pattern)
         if (!isNotifying) {
             isNotifying = true;
             if (isRemovingCompletely) {
@@ -137,6 +139,7 @@ public class ManagmentCart {
         listItem.get(position).setNumberInCart(listItem.get(position).getNumberInCart() + 1);
         tinyDB.putListObject("CartList", listItem);
 
+        // Notify observers about cart update (Observer Pattern)
         if (!isNotifying) {
             isNotifying = true;
             cartObservable.notifyCartUpdated(getTotalItemsCount(), getTotalFee());
