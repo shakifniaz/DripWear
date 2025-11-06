@@ -38,6 +38,7 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         managementCart = ManagementCart.getInstance(this);
+        //singleton
         managmentFavorites = ManagmentFavorites.getInstance(this);
 
         getBundles();

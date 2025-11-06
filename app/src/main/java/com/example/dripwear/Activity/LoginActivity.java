@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
         });
 
-        // 🔄 SET LOGIN BUTTON LISTENER WITH FIREBASE MANAGER
+        //SET LOGIN BUTTON LISTENER WITH FIREBASE MANAGER
         mLogin.setOnClickListener(v -> {
             String email = mEmail.getText().toString();
             String password = mPassword.getText().toString();
@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
             if (!email.isEmpty() && !password.isEmpty()) {
                 Log.i("LOGIN", "EMAIL: " + email + " PASS:" + password);
 
-                // 🔄 USING FIREBASE MANAGER FACADE
+                //USING FIREBASE MANAGER FACADE
                 loginUserWithFacade(email, password);
             } else {
                 Toast.makeText(LoginActivity.this, "Email and password cannot be empty", Toast.LENGTH_SHORT).show();
@@ -58,9 +58,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * 🔄 NEW METHOD: Login user using FirebaseManager facade
-     */
+     //Login user using FirebaseManager facade
     private void loginUserWithFacade(String email, String password) {
         FirebaseManager.getInstance(this).loginUser(email, password,
                 new FirebaseManager.AuthCallback() {

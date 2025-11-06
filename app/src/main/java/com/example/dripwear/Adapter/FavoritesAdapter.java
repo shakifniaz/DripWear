@@ -22,7 +22,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
     public FavoritesAdapter(ArrayList<ItemsModel> favoritesList, Context context) {
         this.favoritesList = favoritesList;
         this.context = context;
-        //Initialize the favorites management helper
+        //singleton
         this.managmentFavorites = ManagmentFavorites.getInstance(context);
     }
 

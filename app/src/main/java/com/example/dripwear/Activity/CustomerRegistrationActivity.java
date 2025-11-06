@@ -187,7 +187,7 @@ public class CustomerRegistrationActivity extends AppCompatActivity implements R
         return true;
     }
 
-    // 🟢 OBSERVER IMPLEMENTATION METHODS
+    //OBSERVER IMPLEMENTATION METHODS
     @Override
     public void onRegistrationStarted() { //shows loading dialog when registration starts
         showProgress("Registering...");

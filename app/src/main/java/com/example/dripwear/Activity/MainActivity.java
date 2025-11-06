@@ -232,9 +232,8 @@ public class MainActivity extends AppCompatActivity implements CartObserver {
         });
     }
 
-    /**
-     * NEW METHOD: Get user name using FirebaseManager facade
-     */
+
+    // Get user name using FirebaseManager facade
     private void getUserNameWithFacade() {
         FirebaseManager.getInstance(this).getUserData(userID, new FirebaseManager.SimpleCallback() {
             @Override
@@ -252,9 +251,7 @@ public class MainActivity extends AppCompatActivity implements CartObserver {
         });
     }
 
-    /**
-     * NEW METHOD: Get user profile image using FirebaseManager facade
-     */
+     //Get user profile image using FirebaseManager facade
     private void getUserProfileImageWithFacade() {
         FirebaseManager.getInstance(this).getUserData(userID, new FirebaseManager.SimpleCallback() {
             @Override

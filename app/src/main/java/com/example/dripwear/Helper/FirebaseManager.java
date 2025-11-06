@@ -30,7 +30,7 @@ public class FirebaseManager {
         return instance;
     }
 
-    // ================= USER OPERATIONS =================
+    //USER OPERATIONS
 
     public void getUserData(String userId, final SimpleCallback callback) {
         mDatabase.child("Users").child("Customers").child(userId)
@@ -64,7 +64,7 @@ public class FirebaseManager {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         String userId = mAuth.getCurrentUser().getUid();
-                        // Save user data after successful registration
+                        //Save user data after successful registration
                         updateUserProfile(userId, userData, new OperationCallback() {
                             @Override
                             public void onSuccess() {
@@ -93,7 +93,6 @@ public class FirebaseManager {
                     }
                 });
     }
-    // 🔄 ADD THIS METHOD TO FirebaseManager.java
     public void resetPassword(String email, final OperationCallback callback) {
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(task -> {
@@ -105,7 +104,7 @@ public class FirebaseManager {
                 });
     }
 
-    // ================= CALLBACK INTERFACES =================
+    //CALLBACK INTERFACES
 
     public interface SimpleCallback {
         void onSuccess(DataSnapshot snapshot);
@@ -122,7 +121,6 @@ public class FirebaseManager {
         void onAuthError(String error);
     }
 
-    // ================= UTILITY METHODS =================
 
     public String getCurrentUserId() {
         return mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;

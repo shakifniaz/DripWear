@@ -27,6 +27,7 @@ public class CartActivity extends AppCompatActivity {
         binding = ActivityCartBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        //singleton
         managementCart = ManagementCart.getInstance(this);
         bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setItemSelected(R.id.cart, true);

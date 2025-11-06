@@ -22,7 +22,7 @@ public class FavoritesActivity extends AppCompatActivity {
         binding = ActivityFavoritesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //Initialize favorites management class
+        //Initialize favorites management class(singleton)
         managementFavorites = ManagmentFavorites.getInstance(this);
 
         bottomNav = findViewById(R.id.bottomNavigation);
