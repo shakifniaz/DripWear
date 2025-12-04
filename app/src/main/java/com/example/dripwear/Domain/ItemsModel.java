@@ -22,15 +22,12 @@ public class ItemsModel implements Serializable {
     private double rating;
     private int NumberInCart;
 
-    // Clean imports make this much simpler
     private transient PricingStrategy pricingStrategy;
 
     public ItemsModel(){
-        // Default to regular pricing
         this.pricingStrategy = new RegularPricing();
     }
 
-    // === YOUR EXISTING GETTERS/SETTERS ===
     public String getTitle() {
         return title;
     }
@@ -119,8 +116,8 @@ public class ItemsModel implements Serializable {
         NumberInCart = numberInCart;
     }
 
-    // === STRATEGY PATTERN METHODS ===
 
+    //strategy methods
     public void setPricingStrategy(PricingStrategy strategy) {
         this.pricingStrategy = strategy;
     }
@@ -131,24 +128,24 @@ public class ItemsModel implements Serializable {
         }
         return this.price * quantity; // fallback to regular calculation
     }
-
+    //helper method for getting strategy
     public String getPricingStrategyName() {
         if (pricingStrategy != null) {
             return pricingStrategy.getStrategyName();
         }
-        return "Regular Price"; // fallback
+        return "Regular Price"; //fallback
     }
 
     public PricingStrategy getPricingStrategy() {
         return pricingStrategy;
     }
 
-    // Helper method to check if item has special pricing
+    //helper method to check if item has special pricing
     public boolean hasSpecialPricing() {
         return pricingStrategy != null && !(pricingStrategy instanceof RegularPricing);
     }
 
-    // Helper method to get discount percentage (if any)
+    //helper method to get discount percentage (if any)
     public double getEffectiveDiscount() {
         if (pricingStrategy == null || pricingStrategy instanceof RegularPricing) {
             return 0.0;

@@ -233,9 +233,9 @@ public class MainActivity extends AppCompatActivity implements CartObserver {
     }
 
 
-    // Get user name using FirebaseManager facade
+    //get user name using FirebaseManager facade
     private void getUserNameWithFacade() {
-        FirebaseManager.getInstance(this).getUserData(userID, new FirebaseManager.SimpleCallback() {
+        FirebaseManager.getInstance().getUserData(userID, new FirebaseManager.SimpleCallback() {
             @Override
             public void onSuccess(DataSnapshot snapshot) {
                 if (snapshot.exists() && snapshot.hasChild("name")) {
@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements CartObserver {
 
      //Get user profile image using FirebaseManager facade
     private void getUserProfileImageWithFacade() {
-        FirebaseManager.getInstance(this).getUserData(userID, new FirebaseManager.SimpleCallback() {
+        FirebaseManager.getInstance().getUserData(userID, new FirebaseManager.SimpleCallback() {
             @Override
             public void onSuccess(DataSnapshot snapshot) {
                 if (snapshot.exists() && snapshot.hasChild("profileImageUrl")) {

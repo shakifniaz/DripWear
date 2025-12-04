@@ -119,7 +119,7 @@ public class CustomerRegistrationActivity extends AppCompatActivity implements R
         userData.put("dob", dob);
         userData.put("gender", gender);
 
-        FirebaseManager.getInstance(this).registerUser(email, password, userData,
+        FirebaseManager.getInstance().registerUser(email, password, userData, //singleton + simplified firebase interface using facade
                 new FirebaseManager.AuthCallback() {
                     @Override
                     public void onAuthSuccess(String userId) {

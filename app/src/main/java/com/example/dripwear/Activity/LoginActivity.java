@@ -29,12 +29,12 @@ public class LoginActivity extends AppCompatActivity {
 
         TextView forgotPasswordLink = findViewById(R.id.forgotpassword);
 
-        // Forgot password link click
+        //Forgot password link click
         forgotPasswordLink.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
         });
 
-        //SET LOGIN BUTTON LISTENER WITH FIREBASE MANAGER
+        //login button listener with FirebaseManager
         mLogin.setOnClickListener(v -> {
             String email = mEmail.getText().toString();
             String password = mPassword.getText().toString();
@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
             if (!email.isEmpty() && !password.isEmpty()) {
                 Log.i("LOGIN", "EMAIL: " + email + " PASS:" + password);
 
-                //USING FIREBASE MANAGER FACADE
+                //using FirebaseManager facade
                 loginUserWithFacade(email, password);
             } else {
                 Toast.makeText(LoginActivity.this, "Email and password cannot be empty", Toast.LENGTH_SHORT).show();
@@ -51,20 +51,20 @@ public class LoginActivity extends AppCompatActivity {
 
         TextView registrationLink = findViewById(R.id.registration1);
 
-        // Registration link click
+        //registration link click
         registrationLink.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, CustomerRegistrationActivity.class));
             finish();
         });
     }
 
-     //Login user using FirebaseManager facade
+    //Login user using FirebaseManager facade
     private void loginUserWithFacade(String email, String password) {
-        FirebaseManager.getInstance(this).loginUser(email, password,
+        FirebaseManager.getInstance().loginUser(email, password, //singleton + simplified firebase interface using facade
                 new FirebaseManager.AuthCallback() {
                     @Override
                     public void onAuthSuccess(String userId) {
-                        // Authentication successful
+                        //authentication successful
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onAuthError(String error) {
-                        // Authentication failed
+                        //authentication failed
                         Log.e("LOGIN", "Authentication failed: " + error);
                         Toast.makeText(LoginActivity.this,
                                 "Login failed: " + error, Toast.LENGTH_SHORT).show();

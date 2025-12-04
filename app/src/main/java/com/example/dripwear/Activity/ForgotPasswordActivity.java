@@ -36,7 +36,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             public void onClick(View v) {
                 strEmail = edtEmail.getText().toString().trim();
                 if (!TextUtils.isEmpty(strEmail)) {
-                    //USING FIREBASE MANAGER FACADE
+                    //facade
                     resetPasswordWithFacade();
                 } else {
                     edtEmail.setError("Email field can't be empty");
@@ -52,12 +52,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         });
     }
 
-     //Reset password using FirebaseManager facade
+    //Reset password using FirebaseManager facade
     private void resetPasswordWithFacade() {
         progressBar.setVisibility(View.VISIBLE);
         btnReset.setVisibility(View.INVISIBLE);
 
-        FirebaseManager.getInstance(this).resetPassword(strEmail,
+        FirebaseManager.getInstance().resetPassword(strEmail, //facade
                 new FirebaseManager.OperationCallback() {
                     @Override
                     public void onSuccess() {
