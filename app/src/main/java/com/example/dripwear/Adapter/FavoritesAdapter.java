@@ -8,12 +8,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.example.dripwear.Command.FavoriteItemCommand;
 import com.example.dripwear.Domain.ItemsModel;
 import com.example.dripwear.Helper.ManagmentFavorites;
 import com.example.dripwear.databinding.ViewholderFavoritesBinding;
 import java.util.ArrayList;
 import com.example.dripwear.R;
-
+import com.example.dripwear.Command.AddToCartCommand;
+import com.example.dripwear.Command.MoveToCartCommand;
 public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Viewholder> {
     private ArrayList<ItemsModel> favoritesList;
     private ManagmentFavorites managmentFavorites;
@@ -57,12 +59,35 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
                 .load(item.getPicUrl().get(0))
                 .into(holder.binding.pic);
 
-        //Handle the remove button click
+
+        //Command Pattern
+        //Add to Cart Button
+        holder.binding.quickAddCartBtn.setOnClickListener(v -> {
+            FavoriteItemCommand command = new AddToCartCommand(context, item);
+            command.execute();
+        });
+
+        //Move to Cart Button
+        holder.binding.moveToCartBtn.setOnClickListener(v -> {
+            FavoriteItemCommand command = new MoveToCartCommand(
+                    context, item, position,
+                    pos -> {
+                        //removing from favorites
+                        managmentFavorites.removeItem(favoritesList, pos, () -> {
+                            notifyItemRemoved(pos);
+                            notifyItemRangeChanged(pos, favoritesList.size());
+                        });
+                    });
+            command.execute();
+        });
+
+        //Remove Button
         holder.binding.removeBtn.setOnClickListener(v -> {
             managmentFavorites.removeItem(favoritesList, position, () -> {
                 notifyDataSetChanged();
             });
         });
+
     }
 
     @Override
