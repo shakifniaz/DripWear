@@ -1,3 +1,4 @@
+// CartAdapter.java
 package com.example.dripwear.Adapter;
 
 import android.content.Context;
@@ -13,6 +14,8 @@ import com.example.dripwear.Helper.ChangeNumberItemsListener;
 import com.example.dripwear.Helper.ManagementCart;
 import com.example.dripwear.databinding.ViewholderCartBinding;
 
+import com.example.dripwear.AdapterPattern.UsdToBdtService;
+
 import java.util.ArrayList;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.Viewholder> {
@@ -20,6 +23,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.Viewholder> {
     ChangeNumberItemsListener changeNumberItemsListener;
     private ManagementCart managementCart;
     private boolean isProcessingClick = false;
+
+    private boolean showUsd = true;
+    private final UsdToBdtService usdToBdt = new UsdToBdtService();
 
     public CartAdapter(ArrayList<ItemsModel> listItemsSelected, Context context,
                        ChangeNumberItemsListener changeNumberItemsListener,
@@ -29,11 +35,15 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.Viewholder> {
         this.managementCart = managementCart;
     }
 
+    public void setShowUsd(boolean showUsd) {
+        this.showUsd = showUsd;
+    }
+
     @NonNull
     @Override
     public CartAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ViewholderCartBinding binding = ViewholderCartBinding.inflate(LayoutInflater
-                .from(parent.getContext()), parent, false);
+        ViewholderCartBinding binding = ViewholderCartBinding.inflate(
+                LayoutInflater.from(parent.getContext()), parent, false);
         return new Viewholder(binding);
     }
 
@@ -42,38 +52,42 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.Viewholder> {
         ItemsModel item = listItemsSelected.get(position);
 
         holder.binding.titeTxt.setText(item.getTitle());
-        holder.binding.feeEachItem.setText("$ "+item.getPrice());
-        //Calculate and set total price for this item
-        holder.binding.totalEachItem.setText("$ "+Math.round(item.calculateTotalPrice(item.getNumberInCart())));
-        //Set the number of items
+
+        holder.binding.feeEachItem.setText(formatPrice(item.getPrice()));
+
+        double lineTotalUsd = item.calculateTotalPrice(item.getNumberInCart());
+        holder.binding.totalEachItem.setText(formatPrice(lineTotalUsd));
+
+        if (item.getOldPrice() > 0) {
+            holder.binding.oldPriceTxt.setText(formatPrice(item.getOldPrice()));
+            holder.binding.oldPriceTxt.setVisibility(android.view.View.VISIBLE);
+        } else {
+            holder.binding.oldPriceTxt.setVisibility(android.view.View.GONE);
+        }
+
         holder.binding.numberItemTxt.setText(String.valueOf(item.getNumberInCart()));
 
-        //Load item image with Glide
         Glide.with(holder.itemView.getContext())
                 .load(listItemsSelected.get(position).getPicUrl().get(0))
                 .into(holder.binding.pic);
 
-        //Handle plus button click with click prevention
         holder.binding.plsuCartBtn.setOnClickListener(v -> {
             if (!isProcessingClick) {
                 isProcessingClick = true;
                 managementCart.plusItem(listItemsSelected, position, () -> {
                     notifyDataSetChanged();
                     changeNumberItemsListener.changed();
-                    // Reset click prevention after a short delay
                     holder.itemView.postDelayed(() -> isProcessingClick = false, 300);
                 });
             }
         });
 
-        //Handle minus button click with click prevention
         holder.binding.minusCartBtn.setOnClickListener(v -> {
             if (!isProcessingClick) {
                 isProcessingClick = true;
                 managementCart.minusItem(listItemsSelected, position, () -> {
                     notifyDataSetChanged();
                     changeNumberItemsListener.changed();
-                    // Reset click prevention after a short delay
                     holder.itemView.postDelayed(() -> isProcessingClick = false, 300);
                 });
             }
@@ -91,5 +105,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.Viewholder> {
             super(binding.getRoot());
             this.binding = binding;
         }
+    }
+
+    private String formatUsd(double v) { return String.format("$ %.2f", v); }
+    private String formatBdt(double v) { return String.format("৳ %.2f BDT", v); }
+
+    private String formatPrice(double usdAmount) {
+        if (showUsd) return formatUsd(usdAmount);
+        double bdt = usdToBdt.convertUsdToBdt(usdAmount);
+        return formatBdt(bdt);
     }
 }
