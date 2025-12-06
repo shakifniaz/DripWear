@@ -162,6 +162,17 @@
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/clearCartButton"
+                style="@android:style/Widget.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/red_bg"
+                android:text="Clear Cart"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/undoBtn"
@@ -169,12 +180,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/grey_bg"
                 android:text="Undo Last Change"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
-
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/checkoutBtn"
@@ -189,6 +199,7 @@
                 android:textSize="18sp" />
         </LinearLayout>
     </ScrollView>
+
     <com.ismaeldivita.chipnavigation.ChipNavigationBar
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"

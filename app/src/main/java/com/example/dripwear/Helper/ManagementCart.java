@@ -65,6 +65,18 @@ public class ManagementCart {
         return caretaker.hasPreviousState();
     }
 
+    //Factory Method
+    public void clearCart() {
+        ArrayList<ItemsModel> emptyList = new ArrayList<>();
+        tinyDB.putListObject("CartList", emptyList);
+
+        //Notify observers about cart update
+        if (!isNotifying) {
+            isNotifying = true;
+            cartObservable.notifyCartUpdated(getTotalItemsCount(), getTotalFee());
+            isNotifying = false;
+        }
+    }
 
     //Other methods
     public void insertItem(ItemsModel item) {

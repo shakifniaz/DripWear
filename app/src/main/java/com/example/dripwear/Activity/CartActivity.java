@@ -3,12 +3,15 @@ package com.example.dripwear.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.dripwear.Adapter.CartAdapter;
+import com.example.dripwear.Factory.CartAction;
+import com.example.dripwear.Factory.CartActionFactory;
 import com.example.dripwear.Helper.ManagementCart;
 import com.example.dripwear.R;
 import com.example.dripwear.databinding.ActivityCartBinding;
@@ -39,6 +42,9 @@ public class CartActivity extends AppCompatActivity {
         binding = ActivityCartBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        //Factory Clear Button
+        Button clearCartButton = findViewById(R.id.clearCartButton);
+
         //singleton
         managementCart = ManagementCart.getInstance(this);
         bottomNav = findViewById(R.id.bottomNavigation);
@@ -57,6 +63,20 @@ public class CartActivity extends AppCompatActivity {
                 startActivity(new Intent(this, CustomerSettingsActivity.class));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
+            }
+        });
+
+        //Factory Pattern Clear Cart Button
+        clearCartButton.setOnClickListener(v -> {
+            CartActionFactory factory = new CartActionFactory();
+            CartAction clearAction = factory.createCartAction("clear", managementCart);
+
+            if (clearAction != null) {
+                clearAction.execute();
+                Toast.makeText(this, "Cart cleared!", Toast.LENGTH_SHORT).show();
+                //Refresh the cart display
+                initCartList();
+                calculatorCart();
             }
         });
 
