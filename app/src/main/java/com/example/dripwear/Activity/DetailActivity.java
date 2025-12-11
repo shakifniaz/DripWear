@@ -85,7 +85,7 @@ public class DetailActivity extends AppCompatActivity {
                 isAddingToCart = true;
                 object.setNumberInCart(numberOrder);
 
-                //Factory Pattern: Client calls Factory to get Product
+                //Strategy through factory
                 PricingStrategy strategy = PricingStrategyFactory.getStrategy(object); //Factory
                 object.setPricingStrategy(strategy); //Product set on Client
 
