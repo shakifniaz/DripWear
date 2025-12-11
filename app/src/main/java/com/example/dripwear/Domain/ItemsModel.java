@@ -3,6 +3,12 @@ package com.example.dripwear.Domain;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+// Import your strategy classes
+import com.example.dripwear.Strategy.PricingStrategy;
+import com.example.dripwear.Strategy.RegularPricing;
+import com.example.dripwear.Strategy.DiscountPricing;
+
+
 public class ItemsModel implements Serializable {
     private String title;
     private String description;
@@ -16,7 +22,10 @@ public class ItemsModel implements Serializable {
     private double rating;
     private int NumberInCart;
 
+    private transient PricingStrategy pricingStrategy;
+
     public ItemsModel(){
+        this.pricingStrategy = new RegularPricing();
     }
 
     public String getTitle() {
@@ -108,6 +117,43 @@ public class ItemsModel implements Serializable {
     }
 
 
+    //strategy methods
+    public void setPricingStrategy(PricingStrategy strategy) {
+        this.pricingStrategy = strategy;
+    }
 
+    public double calculateTotalPrice(int quantity) {
+        if (pricingStrategy != null) {
+            return pricingStrategy.calculatePrice(this.price, quantity);
+        }
+        return this.price * quantity; // fallback to regular calculation
+    }
+    //helper method for getting strategy
+    public String getPricingStrategyName() {
+        if (pricingStrategy != null) {
+            return pricingStrategy.getStrategyName();
+        }
+        return "Regular Price"; //fallback
+    }
 
+    public PricingStrategy getPricingStrategy() {
+        return pricingStrategy;
+    }
+
+    //helper method to check if item has special pricing
+    public boolean hasSpecialPricing() {
+        return pricingStrategy != null && !(pricingStrategy instanceof RegularPricing);
+    }
+
+    //helper method to get discount percentage (if any)
+    public double getEffectiveDiscount() {
+        if (pricingStrategy == null || pricingStrategy instanceof RegularPricing) {
+            return 0.0;
+        }
+
+        double regularTotal = this.price * (this.NumberInCart > 0 ? this.NumberInCart : 1);
+        double strategyTotal = calculateTotalPrice(this.NumberInCart > 0 ? this.NumberInCart : 1);
+
+        return ((regularTotal - strategyTotal) / regularTotal) * 100;
+    }
 }

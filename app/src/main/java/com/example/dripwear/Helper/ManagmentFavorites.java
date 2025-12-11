@@ -9,22 +9,31 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class ManagmentFavorites {
+    private static ManagmentFavorites instance;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private static final String FAV_PREF = "FavoritesPref";
     private static final String FAV_LIST_KEY = "favoritesList";
 
-    public ManagmentFavorites(Context context) {
-        //Initialize SharedPreferences
-        sharedPreferences = context.getSharedPreferences(FAV_PREF, Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+    private ManagmentFavorites() {}
+
+    //Singleton method
+    public static synchronized ManagmentFavorites getInstance(Context context) {
+        if (instance == null) {
+            instance = new ManagmentFavorites();
+            instance.initialize(context.getApplicationContext());
+        }
+        return instance;
+    }
+
+    private void initialize(Context appContext) {
+        sharedPreferences = appContext.getSharedPreferences(FAV_PREF, Context.MODE_PRIVATE);
     }
 
     public void insertItem(ItemsModel item) {
         ArrayList<ItemsModel> favoritesList = getListFav();
         boolean exists = false;
 
-        //Check if item exists
         for (ItemsModel i : favoritesList) {
             if (i.getTitle().equals(item.getTitle())) {
                 exists = true;
@@ -32,7 +41,6 @@ public class ManagmentFavorites {
             }
         }
 
-        //Add if new
         if (!exists) {
             favoritesList.add(item);
             saveFavoritesList(favoritesList);
@@ -40,30 +48,24 @@ public class ManagmentFavorites {
     }
 
     public void removeItem(ArrayList<ItemsModel> list, int position, ChangeNumberItemsListener listener) {
-        //Remove item
         list.remove(position);
-        //Save list, trigger listener
         saveFavoritesList(list);
         listener.changed();
     }
 
     private void saveFavoritesList(ArrayList<ItemsModel> list) {
-        //Convert list to JSON
         Gson gson = new Gson();
         String json = gson.toJson(list);
-        //Store JSON string
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(FAV_LIST_KEY, json);
         editor.apply();
     }
 
     public ArrayList<ItemsModel> getListFav() {
-        //Get JSON string
         Gson gson = new Gson();
         String json = sharedPreferences.getString(FAV_LIST_KEY, null);
-        //Define list type for Gson
         Type type = new TypeToken<ArrayList<ItemsModel>>() {}.getType();
 
-        //Return list or new list
         if (json == null) {
             return new ArrayList<>();
         } else {

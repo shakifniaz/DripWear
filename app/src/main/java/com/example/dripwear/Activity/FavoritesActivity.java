@@ -22,8 +22,8 @@ public class FavoritesActivity extends AppCompatActivity {
         binding = ActivityFavoritesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //Initialize favorites management class
-        managementFavorites = new ManagmentFavorites(this);
+        //Initialize favorites management class(singleton)
+        managementFavorites = ManagmentFavorites.getInstance(this);
 
         bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setItemSelected(R.id.favorites, true);
